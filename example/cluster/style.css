@@ -18,8 +18,8 @@ body {
 }
 
 body {
-  background: url("assets/background.jpg") no-repeat center center fixed;
-  background-size: 16%;
+  /* background: url("assets/background.jpg") no-repeat center center fixed; */
+  /* background-size: 16%; */
   /* background-size: cover; */
   background-color: black;
 }
