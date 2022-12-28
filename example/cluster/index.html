@@ -13,7 +13,7 @@
       <div id="speed" >
       <div class="row centerText">
         <div id="velocity" class="rightAlignText" >0</div>
-        <div id="velocityUnits" class="leftAlignText" >MPH</div>
+        <div id="velocityUnits" class="leftAlignText" >KPH</div>
       </div>
     </div>
   </div>
@@ -21,11 +21,28 @@
 
 <div id="iatgauge" class="gauge" >
   <div id="iatNeedle" class="needle gaugeNeedle" ></div>
-  <div class="gaugetext">AMP</div>
+  <div class="gaugetext">AIR</div>
 </div>
 <div id="loadgauge" class="gauge" >
   <div id="loadNeedle" class="needle gaugeNeedle" ></div>
-  <div class="gaugetext lower">RANGE</div>
+  <div class="gaugetext lower">LOAD</div>
+</div>
+<div id="console">
+  <div style="color: white;border: 2px solid white;border-radius: 4px;padding: 8px 16px;width: 15%;top: 182px;left: 55%;position: absolute;">
+    GEAR :<span style="font-size: 3em;font-weight:bold; float: right;color: greenyellow;">N</span>
+  </div>
+  <div style="color: white;border: 2px solid white;border-radius: 4px;padding: 8px 16px;width: 15%;top: 182px;left: 75%;position: absolute;">
+    VBAT :<span style="font-size: 3em;font-weight:bold; float: right;">14.4</span>
+  </div>
+  <div style="color: white;border: 2px solid white;border-radius: 4px;padding: 8px 16px;width: 15%;top: 282px;left: 55%;position: absolute;">
+    RIDE MODE :<span style="font-size: 3em;font-weight:bold; float: right;">1</span>
+  </div>
+  <div style="color: white;border: 2px solid white;border-radius: 4px;padding: 8px 16px;width: 15%;top: 282px;left: 75%;position: absolute;">
+    TC LEVEL :<span style="font-size: 3em;font-weight:bold; float: right;color: red;">0</span>
+  </div>
+  <div style="color: white;border: 2px solid white;border-radius: 4px;padding: 8px 16px;width: 35%;top: 382px;left: 55%;position: absolute;">
+    QS :<span style="font-size: 1em;font-weight:bold; float: right;">ON</span>
+  </div>
 </div>
 <script src="../jquery-1.11.3.min.js"></script>
 <script src="main.js"></script>

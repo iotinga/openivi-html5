@@ -19,13 +19,17 @@ body {
 
 body {
   background: url("assets/background.jpg") no-repeat center center fixed;
-  background-size: cover;
+  background-size: 16%;
+  /* background-size: cover; */
+  background-color: black;
 }
 
 
 #speed {
-  margin-top: 110px;
-  margin-left: 79px;
+  margin-top: 60px;
+  margin-left: 15px;
+  /* margin-top: 110px;
+  margin-left: 79px; */
   width: 307px;
   display: table;
 }
@@ -42,8 +46,10 @@ body {
 
 .centerText {
   vertical-align: bottom;
-  margin-top: 103px;
-  margin-left: 21px;
+  margin-top: 70px;
+  margin-left: 27px;
+  /* margin-top: 103px;
+  margin-left: 21px; */
   width: 307px;
 }
 
@@ -74,12 +80,17 @@ body {
 
 .needleParent {
   position: relative;
-  background: url("assets/dial-main-bg.png") top left no-repeat;
-  height: 607px;
-  width: 626px;
+  background: url("assets/dial-main-bg.png") center no-repeat;
+  background-size: cover;
+  /* background: url("assets/dial-main-bg.png") top left no-repeat; */
+  height: 456px;
+  width: 474px;
+  /* height: 607px;
+  width: 626px; */
   top: 30px;
-  left: 50%;
-  margin-left: -313px;
+  left: 30px;
+  /* left: 50%; */
+  /* margin-left: -313px; */
 }
 
 .centerCircle {
@@ -87,11 +98,15 @@ body {
   z-index: 140;
   margin-top: 110px;
   margin-left: 120px;
-  background: url("assets/dial-main-center-bg.png") top left no-repeat;
+  background: url("assets/dial-main-center-bg.png") center no-repeat;
+  height: 250px;
+  width: 250px;
+  /* background: url("assets/dial-main-center-bg.png") top left no-repeat;
   height: 390px;
-  width: 382px;
+  width: 382px; */
   -webkit-border-radius: 250px;
-  -webkit-box-shadow: 10px 0px 25px #90211C;
+  -webkit-box-shadow: 1px 0px 16px #004aff;
+  /* -webkit-box-shadow: 10px 0px 25px #90211C; */
 }
 
 .gauge {
@@ -110,14 +125,17 @@ body {
 
 #iatgauge {
   background: url("assets/dial-200.png");
-  bottom: 30px;
-  left: 25%;
+  top: 30px;
+  /* bottom: 30px; */
+  left: 64%;
+  /* left: 25%; */
 }
 
 #loadgauge {
   background: url("assets/dial-load-bg.png");
-  bottom: 30px;
-  left: 75%;
+  top: 30px;
+  /* bottom: 30px; */
+  left: 85%;
 }
 
 .gauge .gaugetext {
@@ -135,9 +153,10 @@ body {
 .gaugeNeedle {
   height: 55px;
   width: 3px;
-
-  left: 68px;
-  bottom: 68px;
+  left: 50%;
+  bottom: 50%;
+  /* left: 68px;
+  bottom: 68px; */
   -webkit-transform-origin: 50% 100%;
   -webkit-transition: all 1ms;
   -webkit-border-radius: 5px;
@@ -175,9 +194,11 @@ body {
 
 #rpmNeedle {
   z-index: 110;
-  background-color: #E89820;
-  height: 258px;
-  width: 17px;
+  background-color: red;
+  height: 191px;
+  width: 8px;
+  /* height: 258px;
+  width: 17px; */
   left: 51%;
   bottom: 51%;
   -webkit-transform-origin: 50% 100%;
@@ -187,8 +208,10 @@ body {
 
 #engineCoolantNeedle {
   background-color: white;
-  height: 288px;
-  width: 7px;
+  height: 193px;
+  width: 5px;
+  /* height: 288px;
+  width: 7px; */
   left: 50%;
   bottom: 50%;
   -webkit-transform:rotate(340deg);
@@ -199,8 +222,10 @@ body {
 
 #oilTempNeedle {
   background-color: white;
-  height: 288px;
-  width: 7px;
+  height: 190px;
+  width: 5px;
+  /* height: 288px;
+  width: 7px; */
   left: 50%;
   bottom: 50%;
   -webkit-transform:rotate(225deg);

@@ -1,6 +1,10 @@
 # HTML5 environment for OpenIVI Mobility
 
-This provides a HTML5 runtime for OpenIVI Mobility applications. Documentation is at https://openivimobility.github.io/developing/setting-up-an-html5-development-environment.html[the main OpenIVI docs site].
+This provides a HTML5 runtime for OpenIVI Mobility applications. Documentation is at [the main OpenIVI docs site](https://openivimobility.github.io/developing/setting-up-an-html5-development-environment.html).
+
+This fork aims to integrate Linux SocketCAN interface to read data from CAN bus instead of a demo file.
+
+The interface is optimized for a 800x480 display, but can be easily adapted to different resolution acting on `mainwindow.ui` and HTML/CSS part.
 
 ## Contributing
 
