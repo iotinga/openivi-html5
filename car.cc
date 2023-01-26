@@ -4,7 +4,7 @@
 #include <assert.h>
 
 Car::Car(QObject *parent)
-    : QObject(parent), timer_(new QTimer(this)), speeds_index_(0) {
+    : QObject(parent), timer_(new QTimer(this)), speeds_index_(0), m_tps(0) {
   QFile speeds(":/help/speeds.txt");
   if (speeds.open(QIODevice::ReadOnly | QIODevice::Text)) {
     QTextStream in(&speeds);
@@ -25,8 +25,27 @@ Car::Car(QObject *parent)
 }
 
 void Car::Timer() {
-  rpm(speeds_[speeds_index_++] * 400);
+  speeds_index_++;
+  m_rpm = speeds_[speeds_index_] * 400;
+  m_tps = speeds_index_;
+  refresh_data();
   if (speeds_.size() <= speeds_index_) {
     speeds_index_ = 0;
   }
+}
+
+void Car::setTps(double tpsValue) {
+  m_tps = tpsValue;
+}
+
+double Car::getTps() {
+  return m_tps;
+}
+
+void Car::setRpm(double rpmValue) {
+  m_rpm = rpmValue;
+}
+
+double Car::getRpm() {
+  return m_rpm;
 }

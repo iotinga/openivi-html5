@@ -1,4 +1,4 @@
-.*.swp
-/build
-CMakeLists.txt.user
-/tags
+.kdev4/
+openivi-html5.kdev4
+tags
+build/

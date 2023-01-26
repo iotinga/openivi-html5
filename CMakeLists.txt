@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.8)
+cmake_minimum_required(VERSION 3.0.4)
 project(openivi-html5)
 
 # Tell CMake to run moc when necessary:
@@ -20,6 +20,7 @@ find_package(X11)
 
 find_program(CTAGS NAMES ctags)
 
+
 qt5_wrap_ui(UI_MAINWINDOW mainwindow.ui)
 
 set_source_files_properties(softwareloadingmanager.xml
@@ -29,7 +30,10 @@ qt5_add_resources(RCC_FILES resources/resources.qrc)
 
 # Generate config.h from config.h.in
 configure_file(config.h.in config.h)
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR} ${openivi-html5_SOURCE_DIR}/can_reader)
+
+# Add subdirectory for CAN bus reading
+add_subdirectory(can_reader)
 
 add_executable(openivi-html5
         main.cc mainwindow.cc webgraphicview.cc softwareloadingmanager.cc
@@ -37,14 +41,16 @@ add_executable(openivi-html5
         virtualkeyboard.cc allowlocation_webpage.cc
         ${DBUS_FILES} ${RCC_FILES} ${UI_MAINWINDOW})
 
-if (X11_FOUND)
-  target_link_libraries(openivi-html5 ${X11_LIBRARIES})
-  include_directories(${X11_INCLUDE_DIR})
-endif(X11_FOUND)
-
 set_property(TARGET openivi-html5 PROPERTY CXX_STANDARD 11)
 
-qt5_use_modules(openivi-html5 Widgets DBus WebKitWidgets)
+if (X11_FOUND)
+  target_link_libraries(openivi-html5 ${X11_LIBRARIES} Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets)
+  include_directories(${X11_INCLUDE_DIR})
+else(X11_FOUND)
+  target_link_libraries(openivi-html5 Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets)
+endif(X11_FOUND)
+
+# qt5_use_modules(openivi-html5 Widgets DBus WebKitWidgets)
 
 message("Build type is ${CMAKE_BUILD_TYPE}")
 

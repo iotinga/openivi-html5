@@ -30,11 +30,19 @@ function init() {
   engine_coolant_dial.set(85);
   var speed = $('#velocity');
   if (window.car) {
-    window.car.rpm.connect(function (rpm) {
-      rpm_dial.set(rpm);
-      amp_dial.set(rpm/100);
+    window.car.refresh_data.connect(function () {
+      var actualRpm = 0;
+      if (window.car.rpm) {
+        actualRpm = window.car.rpm;
+      }
+      rpm_dial.set(actualRpm);
+      amp_dial.set(actualRpm/100);
       range_dial.set(50);
-      speed.text(Math.floor(rpm/80)); 
+      var actualSpeed = 1;
+      if (window.car.tps) {
+        actualSpeed = window.car.tps;
+      }
+      speed.text(Math.floor(actualSpeed));
     });
   } else if (window.console) {
     console.log("window.car not found");
