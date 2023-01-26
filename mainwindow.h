@@ -22,6 +22,7 @@
 
 #include <QMainWindow>
 #include <QUrl>
+#include "car.h"
 
 namespace Ui {
 class MainWindow;
@@ -31,7 +32,7 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 
  public:
-  explicit MainWindow(QWidget *parent = 0, const QUrl &force_url = QUrl());
+  explicit MainWindow(QWidget *parent = 0, const QUrl &force_url = QUrl(), DataInputMode inputMode = DATA_INPUT_NONE);
   ~MainWindow();
 
   void SetUrl(const QUrl &url);

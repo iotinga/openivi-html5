@@ -22,7 +22,7 @@
 #include <QFileDialog>
 #include <QSettings>
 
-MainWindow::MainWindow(QWidget *parent, const QUrl &force_url)
+MainWindow::MainWindow(QWidget *parent, const QUrl &force_url, DataInputMode inputMode)
     : QMainWindow(parent), ui_(new Ui::MainWindow) {
   ui_->setupUi(this);
   // Menu behaviours
@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent, const QUrl &force_url)
   connect(ui_->action_Full_Screen, SIGNAL(triggered()), this,
           SLOT(ToggleFullScreen()));
 
+  ui_->graphicsView->SetInputMode(inputMode);
   if (force_url.isEmpty()) {
     QSettings settings;
     QUrl startingUrl =

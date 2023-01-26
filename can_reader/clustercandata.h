@@ -9,7 +9,8 @@
 
 typedef struct ClusterCANData_Struct
 {
-
+	uint32_t tps_raw;
+	uint32_t rpm_raw;
 } ClusterCANData;
 
 #endif

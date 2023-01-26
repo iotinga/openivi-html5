@@ -92,4 +92,9 @@ void WebGraphicView::AddJavascriptObjectsToWindow() {
   page_->currentFrame()->addToJavaScriptWindowObject("car", car_);
 }
 
+void WebGraphicView::SetInputMode(DataInputMode inputMode)
+{
+  car_->SetInputMode(inputMode);
+}
+
 /* vim: set expandtab tabstop=2 shiftwidth=2: */

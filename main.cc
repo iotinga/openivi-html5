@@ -18,6 +18,7 @@
 */
 
 #include "mainwindow.h"
+#include "car.h"
 #include <QApplication>
 #include <QtWebKitWidgets>
 #include <QCommandLineParser>
@@ -30,6 +31,7 @@ int main(int argc, char *argv[]) {
   QApplication a(argc, argv);
   QApplication::setOrganizationName("OpenIVI");
   QApplication::setApplicationName("openivi");
+  DataInputMode inputMode = DATA_INPUT_FILE;
 
   QCommandLineParser parser;
   parser.setApplicationDescription("OpenIVI Mobility HTML5 environment");
@@ -51,11 +53,20 @@ int main(int argc, char *argv[]) {
                                 qtr("Start Full Screen"));
   parser.addOption(fullScreen);
 
+  QCommandLineOption canMode(QStringList() << "c"
+                                              << "can",
+                                qtr("Read data from CAN bus"));
+  parser.addOption(fullScreen);
+
   parser.process(a);
 
   if (parser.isSet(clearSettings)) {
     QSettings settings;
     settings.clear();
+  }
+
+  if (parser.isSet(canMode)) {
+    inputMode = DATA_INPUT_CAN;
   }
 
   QString url_str = parser.value(url);
@@ -64,13 +75,15 @@ int main(int argc, char *argv[]) {
        (false == url_str.startsWith("file://", Qt::CaseInsensitive)) ) {
     url_str = "file://" + url_str;
   }
-  MainWindow w(0, QUrl(url_str));
+  MainWindow w(0, QUrl(url_str), inputMode);
 
   w.show();
 
   if (parser.isSet(fullScreen)) {
     w.ToggleFullScreen();
   }
+
+
   return a.exec();
 }
 /* vim: set expandtab tabstop=2 shiftwidth=2: */
