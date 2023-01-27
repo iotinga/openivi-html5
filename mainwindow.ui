@@ -59,8 +59,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>586</width>
-     <height>27</height>
+     <width>800</width>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -97,6 +97,39 @@
    </property>
    <property name="iconText">
     <string>Full Screen</string>
+   </property>
+  </action>
+  <action name="action_No_Data">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Stop</string>
+   </property>
+   <property name="iconText">
+    <string>Stop</string>
+   </property>
+  </action>
+  <action name="actionFrom_file">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>From file</string>
+   </property>
+  </action>
+  <action name="actionFrom_CAN_bus">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>From CAN bus</string>
+   </property>
+   <property name="toolTip">
+    <string>From CAN bus</string>
    </property>
   </action>
  </widget>

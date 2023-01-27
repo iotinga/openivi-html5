@@ -7,12 +7,12 @@
 
 #include <clustercandata.h>
 #include <QThread>
-// #include <QSharedDataPointer>
+#include <QMutex>
 
-// class CanReaderData;
+#include <clustercandata.h>
 
 /**
- * @todo write docs
+ * @brief Thread that continuously reads CAN bus data
  */
 class CanReader : public QThread
 {
@@ -20,7 +20,7 @@ public:
     /**
      * Default constructor
      */
-    CanReader();
+    CanReader(ClusterCANData* outputData, QMutex* outputDataMutex);
 
     /**
      * Destructor
@@ -36,7 +36,8 @@ protected:
     virtual void run();
 
 private:
-    // QSharedDataPointer<CanReaderData> d;
+    ClusterCANData* canData;
+    QMutex* dataMutex;
 };
 
 // Q_DECLARE_TYPEINFO(CanReader, Q_MOVABLE_TYPE);

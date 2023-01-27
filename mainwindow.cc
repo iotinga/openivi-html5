@@ -33,7 +33,9 @@ MainWindow::MainWindow(QWidget *parent, const QUrl &force_url, DataInputMode inp
   connect(ui_->action_Full_Screen, SIGNAL(triggered()), this,
           SLOT(ToggleFullScreen()));
 
+  // Select input source for cluster data
   ui_->graphicsView->SetInputMode(inputMode);
+
   if (force_url.isEmpty()) {
     QSettings settings;
     QUrl startingUrl =

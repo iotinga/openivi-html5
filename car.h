@@ -3,8 +3,10 @@
 
 #include <QObject>
 #include <QTimer>
+#include <QMutex>
 
 #include <clustercandata.h>
+#include <canreader.h>
 #include <vector>
 
 typedef enum DataInputMode_Enum
@@ -17,7 +19,9 @@ typedef enum DataInputMode_Enum
 class Car : public QObject {
   Q_OBJECT
  public:
-  explicit Car(QObject *parent = 0, DataInputMode inputMode = DATA_INPUT_NONE);
+  explicit Car(QObject *parent = 0);
+
+  ~Car();
 
   void setTps(double tpsValue);
   double getTps();
@@ -35,11 +39,25 @@ signals:
  private slots:
   void Timer();
 
+ protected:
+   void clearData();
  private:
+  // Internal timer
   QTimer *timer_;
+
+  // Data input mode
   DataInputMode mode;
+
+  // Speed data for file input mode
   std::vector<double> speeds_;
   size_t speeds_index_;
+
+  // CAN data reader interface
+  CanReader* canReader;
+  ClusterCANData rawCanData;
+  QMutex* dataMutex;
+
+  // Actual values to be transfered to cluster instruments
   double m_tps;
   double m_rpm;
 };

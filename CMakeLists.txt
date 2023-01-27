@@ -44,10 +44,10 @@ add_executable(openivi-html5
 set_property(TARGET openivi-html5 PROPERTY CXX_STANDARD 11)
 
 if (X11_FOUND)
-  target_link_libraries(openivi-html5 ${X11_LIBRARIES} Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets)
+  target_link_libraries(openivi-html5 canreader ${X11_LIBRARIES} Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets)
   include_directories(${X11_INCLUDE_DIR})
 else(X11_FOUND)
-  target_link_libraries(openivi-html5 Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets)
+  target_link_libraries(openivi-html5 canreader Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets)
 endif(X11_FOUND)
 
 # qt5_use_modules(openivi-html5 Widgets DBus WebKitWidgets)

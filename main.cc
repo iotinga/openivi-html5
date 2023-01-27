@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
   QCommandLineOption canMode(QStringList() << "c"
                                               << "can",
                                 qtr("Read data from CAN bus"));
-  parser.addOption(fullScreen);
+  parser.addOption(canMode);
 
   parser.process(a);
 

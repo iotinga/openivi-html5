@@ -3,34 +3,30 @@
 #include <QFile>
 #include <assert.h>
 
-Car::Car(QObject *parent, DataInputMode inputMode)
-    : QObject(parent), timer_(new QTimer(this)), mode(inputMode), speeds_index_(0), m_tps(0), m_rpm(0) {
-  switch(mode) {
-    case DATA_INPUT_FILE: {
-      QFile speeds(":/help/speeds.txt");
-      if (speeds.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QTextStream in(&speeds);
-        for (QString line = in.readLine(); !line.isNull(); line = in.readLine()) {
-          double speed = line.toDouble();
-          speeds_.push_back(speed);
-        }
-      } else {
-        qDebug() << "failed to open speeds resource";
-        speeds_.push_back(50);
-      }
-      assert(speeds_.size() > 0);
-    } break;
-    case DATA_INPUT_CAN: {
-    } break;
-    default:
-      // Do nothing: data will remain stopped
-      break;
-  }
+Car::Car(QObject *parent)
+    : QObject(parent), timer_(new QTimer(this)), mode(DATA_INPUT_NONE), speeds_index_(0), m_tps(0), m_rpm(0) {
+  dataMutex = new QMutex;
+  canReader = NULL;
+  clearData();
+
   timer_->setInterval(1000 / 5);
   timer_->setSingleShot(false);
   timer_->start();
   connect(timer_, SIGNAL(timeout()), this, SLOT(Timer()));
 }
+
+Car::~Car()
+{
+  delete dataMutex;
+  dataMutex = NULL;
+  if (canReader != NULL) {
+    canReader->requestInterruption();
+    canReader->wait();
+    delete canReader;
+    canReader = NULL;
+  }
+}
+
 
 void Car::Timer() {
   switch (mode) {
@@ -44,6 +40,13 @@ void Car::Timer() {
       }
     } break;
     case DATA_INPUT_CAN: {
+      if (canReader != NULL) {
+        dataMutex->lock();
+        m_rpm = (double) rawCanData.rpm_raw;
+        m_tps = (double) rawCanData.tps_raw;
+        dataMutex->unlock();
+        refresh_data();
+      }
     } break;
     default:
       break;
@@ -68,6 +71,44 @@ double Car::getRpm() {
 
 void Car::SetInputMode(DataInputMode inputMode)
 {
+  clearData();
   mode = inputMode;
+
+  switch(mode) {
+    case DATA_INPUT_FILE: {
+      if (speeds_.size() == 0) {
+        QFile speeds(":/help/speeds.txt");
+        if (speeds.open(QIODevice::ReadOnly | QIODevice::Text)) {
+          QTextStream in(&speeds);
+          for (QString line = in.readLine(); !line.isNull(); line = in.readLine()) {
+            double speed = line.toDouble();
+            speeds_.push_back(speed);
+          }
+        } else {
+          qDebug() << "failed to open speeds resource";
+          speeds_.push_back(50);
+        }
+        assert(speeds_.size() > 0);
+      }
+    } break;
+    case DATA_INPUT_CAN: {
+      if (canReader == NULL) {
+        canReader = new CanReader(&rawCanData, dataMutex);
+        canReader->start();
+      }
+    } break;
+    default:
+      // Do nothing: data will remain stopped
+      break;
+  }
 }
 
+void Car::clearData()
+{
+  m_tps = 0.0;
+  m_rpm = 0.0;
+  dataMutex->lock();
+  rawCanData.rpm_raw = 0;
+  rawCanData.tps_raw = 0;
+  dataMutex->unlock();
+}
