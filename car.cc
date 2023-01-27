@@ -9,7 +9,7 @@ Car::Car(QObject *parent)
   canReader = NULL;
   clearData();
 
-  timer_->setInterval(1000 / 5);
+  timer_->setInterval(1000 / DATA_REFRESH_FREQUENCY_HZ);
   timer_->setSingleShot(false);
   timer_->start();
   connect(timer_, SIGNAL(timeout()), this, SLOT(Timer()));

@@ -9,6 +9,8 @@
 #include <canreader.h>
 #include <vector>
 
+#define DATA_REFRESH_FREQUENCY_HZ 10
+
 typedef enum DataInputMode_Enum
 {
   DATA_INPUT_NONE,

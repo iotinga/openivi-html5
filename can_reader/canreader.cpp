@@ -30,7 +30,7 @@ void CanReader::run()
         }
         // DEBUG increase values as counters, then sleep for a while
         dataMutex->lock();
-        canData->rpm_raw = (canData->rpm_raw + 10) % 12000;
+        canData->rpm_raw = (canData->rpm_raw + 10) % 10000;
         canData->tps_raw = (canData->tps_raw + 1) % 100;
         dataMutex->unlock();
         usleep(100000);

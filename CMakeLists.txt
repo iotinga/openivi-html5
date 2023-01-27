@@ -13,13 +13,14 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
 
+set(SocketCAN_DIR ${openivi-html5_SOURCE_DIR})
+
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5WebKitWidgets REQUIRED)
 find_package(Qt5DBus REQUIRED)
 find_package(X11)
 
 find_program(CTAGS NAMES ctags)
-
 
 qt5_wrap_ui(UI_MAINWINDOW mainwindow.ui)
 
