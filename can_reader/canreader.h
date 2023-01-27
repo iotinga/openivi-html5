@@ -10,6 +10,7 @@
 #include <QMutex>
 
 #include <clustercandata.h>
+#include <caninterfacesocketcan.h>
 
 /**
  * @brief Thread that continuously reads CAN bus data
@@ -38,6 +39,9 @@ protected:
 private:
     ClusterCANData* canData;
     QMutex* dataMutex;
+
+    // CAN bus interface
+    CANInterface* canBus;
 };
 
 // Q_DECLARE_TYPEINFO(CanReader, Q_MOVABLE_TYPE);

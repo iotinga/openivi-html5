@@ -3,22 +3,20 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "canreader.h"
-#include <QSharedData>
-
-class CanReaderData : public QSharedData
-{
-public:
-};
 
 CanReader::CanReader(ClusterCANData* outputData, QMutex* outputDataMutex)
     : canData(outputData), dataMutex(outputDataMutex)
 {
-
+    /* canBus pointer is of abstract type CANInterface,
+     * but currently there is only one interface implemented,
+     * so go straight to allocation. In the future, multiple
+     * CAN devices may be implemented. */
+    canBus = (CANInterface*) new CANInterfaceSocketCAN;
 }
 
 CanReader::~CanReader()
 {
-
+    delete canBus;
 }
 
 void CanReader::run()
