@@ -92,6 +92,12 @@ void WebGraphicView::AddJavascriptObjectsToWindow() {
   page_->currentFrame()->addToJavaScriptWindowObject("car", car_);
 }
 
+void WebGraphicView::AddSettings(const QString& settingFilePath)
+{
+  car_->ParseSettingFile(settingFilePath);
+}
+
+
 void WebGraphicView::SetInputMode(DataInputMode inputMode)
 {
   car_->SetInputMode(inputMode);

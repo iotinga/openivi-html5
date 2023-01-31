@@ -9,6 +9,7 @@
 #include <QThread>
 #include <QMutex>
 
+#include <string>
 #include <clustercandata.h>
 #include <caninterfacesocketcan.h>
 
@@ -21,12 +22,14 @@ public:
     /**
      * Default constructor
      */
-    CanReader(ClusterCANData* outputData, QMutex* outputDataMutex);
+    CanReader(const char* busName, CANSetup* busSetup, ClusterCANData* outputData, QMutex* outputDataMutex);
 
     /**
      * Destructor
      */
     ~CanReader();
+
+
 
 protected:
     /**
@@ -42,6 +45,8 @@ private:
 
     // CAN bus interface
     CANInterface* canBus;
+    CANSetup portSetup;
+    std::string canBusName;
 };
 
 // Q_DECLARE_TYPEINFO(CanReader, Q_MOVABLE_TYPE);

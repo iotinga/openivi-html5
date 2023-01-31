@@ -22,7 +22,7 @@
 #include <QFileDialog>
 #include <QSettings>
 
-MainWindow::MainWindow(QWidget *parent, const QUrl &force_url, DataInputMode inputMode)
+MainWindow::MainWindow(QWidget *parent, const QUrl &force_url, DataInputMode inputMode, const QString &settingsPath)
     : QMainWindow(parent), ui_(new Ui::MainWindow) {
   ui_->setupUi(this);
   // Menu behaviours
@@ -32,6 +32,13 @@ MainWindow::MainWindow(QWidget *parent, const QUrl &force_url, DataInputMode inp
 
   connect(ui_->action_Full_Screen, SIGNAL(triggered()), this,
           SLOT(ToggleFullScreen()));
+
+  /* IMPORTANT: always set settings BEFORE changing input mode.
+   * This way, CAN bus settings will be parsed when CAN reader
+   * is initialized. */
+  if (!settingsPath.isEmpty()) {
+    ui_->graphicsView->AddSettings(settingsPath);
+  }
 
   // Select input source for cluster data
   ui_->graphicsView->SetInputMode(inputMode);

@@ -41,6 +41,7 @@ class WebGraphicView : public QGraphicsView {
   virtual void resizeEvent(QResizeEvent *event);
   void SetUrl(const QUrl &url);
 
+  void AddSettings(const QString& settingFilePath);
   void SetInputMode(DataInputMode inputMode);
  public slots:
   void FocusUpdate();

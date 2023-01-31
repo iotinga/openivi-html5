@@ -6,10 +6,15 @@
 #define CAN_DATA_BUFFER_H
 
 #include <cstdint>
+#include <set>
+#include <canchannel.h>
 
 typedef struct ClusterCANData_Struct
 {
-	uint32_t tps_raw;
+	std::set<canid_t> can_filter_set;
+	CANChannel* speed_ch;
+	CANChannel* rpm_ch;
+	uint32_t speed_raw;
 	uint32_t rpm_raw;
 } ClusterCANData;
 

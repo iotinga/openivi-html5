@@ -28,12 +28,17 @@ typedef enum CAN_Frame_Format_Enum {
 } CAN_Frame_Format;
 
 typedef enum CAN_Bus_Mode_Enum {
-	CAN_MODE_NORMAL = 0,
-	CAN_MODE_SILENT = 1,
-	CAN_MODE_OFF = 2,
+	CAN_MODE_NORMAL 						= 0,
+	CAN_MODE_SILENT 						= 1,
+	CAN_MODE_OFF 								= 2,
 	CAN_MODE_BUILTIN_OUT_LITTLE = 3,
-	CAN_MODE_BUILTIN_OUT_BIG = 4
+	CAN_MODE_BUILTIN_OUT_BIG 		= 4
 } CAN_Bus_Mode;
+
+typedef enum CAN_Data_Endianess_Enum {
+	CAN_ENDIAN_BIG			= 0,
+	CAN_ENDIAN_LITTLE		= 1
+} CAN_Data_Endianess;
 
 typedef enum CommRetCode_Enum {
 	CRET_OK 									= 0,
@@ -64,6 +69,7 @@ typedef struct CANSetup_Struct {
 	int timeout_ms;										// Read Timeout [ms]
 	struct can_filter *filterIDs;			// IDs to be filtered: it is an array of filters, no filter if set to NULL
 	uint32_t filterCount;							// Number of filters set
+	CAN_Data_Endianess endianess;
 } CANSetup;
 
 class CANInterface

@@ -32,7 +32,7 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 
  public:
-  explicit MainWindow(QWidget *parent = 0, const QUrl &force_url = QUrl(), DataInputMode inputMode = DATA_INPUT_NONE);
+  explicit MainWindow(QWidget *parent = 0, const QUrl &force_url = QUrl(), DataInputMode inputMode = DATA_INPUT_NONE, const QString &settingsPath = QString());
   ~MainWindow();
 
   void SetUrl(const QUrl &url);

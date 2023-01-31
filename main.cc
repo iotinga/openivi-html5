@@ -58,6 +58,11 @@ int main(int argc, char *argv[]) {
                                 qtr("Read data from CAN bus"));
   parser.addOption(canMode);
 
+  QCommandLineOption settingFile(QStringList() << "s"
+                                              << "settings",
+                                qtr("Read data from CAN bus"), "settings");
+  parser.addOption(settingFile);
+
   parser.process(a);
 
   if (parser.isSet(clearSettings)) {
@@ -75,7 +80,9 @@ int main(int argc, char *argv[]) {
        (false == url_str.startsWith("file://", Qt::CaseInsensitive)) ) {
     url_str = "file://" + url_str;
   }
-  MainWindow w(0, QUrl(url_str), inputMode);
+  QString settings_str = parser.value(settingFile);
+
+  MainWindow w(0, QUrl(url_str), inputMode, settings_str);
 
   w.show();
 

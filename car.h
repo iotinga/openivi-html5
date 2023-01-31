@@ -4,12 +4,15 @@
 #include <QObject>
 #include <QTimer>
 #include <QMutex>
+#include <QJsonDocument>
 
 #include <clustercandata.h>
 #include <canreader.h>
 #include <vector>
 
-#define DATA_REFRESH_FREQUENCY_HZ 10
+#define MIN_REFRESH_FREQUENCY_HZ 1
+#define MAX_REFRESH_FREQUENCY_HZ 50
+#define DEFAULT_REFRESH_FREQUENCY_HZ 10
 
 typedef enum DataInputMode_Enum
 {
@@ -30,6 +33,7 @@ class Car : public QObject {
   void setRpm(double rpmValue);
   double getRpm();
 
+  int ParseSettingFile(const QString& path);
   void SetInputMode(DataInputMode inputMode);
 
   Q_PROPERTY(double rpm READ getRpm WRITE setRpm);
@@ -43,6 +47,7 @@ signals:
 
  protected:
    void clearData();
+   void ParseChannelSetup(const QJsonObject& channelJson);
  private:
   // Internal timer
   QTimer *timer_;
@@ -56,12 +61,17 @@ signals:
 
   // CAN data reader interface
   CanReader* canReader;
-  ClusterCANData rawCanData;
+  ClusterCANData clusterCanData;
   QMutex* dataMutex;
 
   // Actual values to be transfered to cluster instruments
-  double m_tps;
+  double m_speed;
   double m_rpm;
+
+  // Setup info
+  QJsonDocument clusterSetup;
+  CANSetup canSetupInfo;
+  QString canBusName;
 };
 
 #endif  // CAR_H
