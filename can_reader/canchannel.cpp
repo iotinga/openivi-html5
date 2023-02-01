@@ -15,6 +15,7 @@ CANChannel::CANChannel(const char* inputName)
 	startbyte = 0;
 	bytelength = 0;
 	need_mask = false;
+	valid = false;
 }
 
 CANChannel::CANChannel(const CANChannel& other)
@@ -28,6 +29,7 @@ CANChannel::CANChannel(const CANChannel& other)
 	startbyte = other.startbyte;
 	bytelength = other.startbyte;
 	need_mask = other.need_mask;
+	valid = other.valid;
 }
 
 CANChannel::~CANChannel()
@@ -46,6 +48,7 @@ CANChannel& CANChannel::operator=(const CANChannel& other)
 	startbyte = other.startbyte;
 	bytelength = other.startbyte;
 	need_mask = other.need_mask;
+	valid = other.valid;
 	return *this;
 }
 
@@ -79,7 +82,7 @@ double CANChannel::GetOffset()
 	return offset;
 }
 
-void CANChannel::SetCANParameters(canid_t id, uint32_t canStart, uint32_t canLength)
+void CANChannel::SetCANParameters(canid_t id, uint32_t canStart, uint32_t canLength, uint32_t maxCanBytes)
 {
 	can_id = id;
 	startbit = canStart;
@@ -89,6 +92,8 @@ void CANChannel::SetCANParameters(canid_t id, uint32_t canStart, uint32_t canLen
 	need_mask = !(((startbit % 8) == 0) && ((bitlength % 8) == 0));
 	startbyte = startbit >> 3;
 	bytelength = bitlength >> 3;
+	// Avoid overflow from CAN frame data
+	valid = (startbyte + bytelength <= maxCanBytes);
 }
 
 void CANChannel::SetCalibrationParameters(double channelGain, double channelOffset)
@@ -105,19 +110,33 @@ double CANChannel::GetCalibratedValue(uint32_t raw)
 uint32_t CANChannel::GetValueFromCANFrame(const canfd_frame* inputFrame, CAN_Data_Endianess endianess)
 {
 	uint32_t result = 0;
-	if (need_mask) {
-		// Not yet implemented!
-	} else {
-		if (bytelength == 1) {
-			result = (uint32_t) inputFrame->data[startbyte];
+	if (valid) {
+		if (need_mask) {
+			// Not yet implemented!
 		} else {
-			if (bytelength == 2) {
-				if (endianess == CAN_ENDIAN_BIG) {
-				} else {
-				}
-			} else if (bytelength == 4) {
-				if (endianess == CAN_ENDIAN_BIG) {
-				} else {
+			if (bytelength == 1) {
+				result = (uint32_t) inputFrame->data[startbyte];
+			} else {
+				if (bytelength == 2) {
+					if (endianess == CAN_ENDIAN_BIG) {
+						result = (uint32_t) inputFrame->data[startbyte + 1];
+						result += (uint32_t) inputFrame->data[startbyte] << 8;
+					} else {
+						result = (uint32_t) inputFrame->data[startbyte];
+						result += (uint32_t) inputFrame->data[startbyte + 1] << 8;
+					}
+				} else if (bytelength == 4) {
+					if (endianess == CAN_ENDIAN_BIG) {
+						result = (uint32_t) inputFrame->data[startbyte + 3];
+						result += (uint32_t) inputFrame->data[startbyte + 2] << 8;
+						result += (uint32_t) inputFrame->data[startbyte + 1] << 16;
+						result += (uint32_t) inputFrame->data[startbyte] << 24;
+					} else {
+						result = (uint32_t) inputFrame->data[startbyte];
+						result += (uint32_t) inputFrame->data[startbyte + 1] << 8;
+						result += (uint32_t) inputFrame->data[startbyte + 2] << 16;
+						result += (uint32_t) inputFrame->data[startbyte + 3] << 24;
+					}
 				}
 			}
 		}

@@ -64,7 +64,7 @@ class CANChannel
     /* Set methods for initalization */
 
     /* Set CAN information for channel. */
-    void SetCANParameters(canid_t id, uint32_t canStart, uint32_t canLength);
+    void SetCANParameters(canid_t id, uint32_t canStart, uint32_t canLength, uint32_t maxCanBytes);
 
     /* set linear calibration parameters */
     void SetCalibrationParameters(double channelGain, double channelOffset);
@@ -84,6 +84,7 @@ class CANChannel
     uint32_t bytelength;
     uint32_t startbyte;
     bool need_mask;
+    bool valid;
     std::string name;
 };
 

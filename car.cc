@@ -186,7 +186,7 @@ int Car::ParseSettingFile(const QString& path)
           }
         }
         if (canObject.contains("endianess")) {
-          if (canObject["endianess"].toString().compare("little")) {
+          if (canObject["endianess"].toString().compare("little") == 0) {
             canSetupInfo.endianess = CAN_ENDIAN_LITTLE;
           } else {
             canSetupInfo.endianess = CAN_ENDIAN_BIG;
@@ -245,7 +245,7 @@ void Car::ParseChannelSetup(const QJsonObject& channelJson)
     if (channelJson.contains("bitlength")) {
       channelBitSize = channelJson["bitlength"].toInt();
     }
-    channelObj->SetCANParameters(channelID, channelStart, channelBitSize);
+    channelObj->SetCANParameters(channelID, channelStart, channelBitSize, canSetupInfo.enableCAN_FD ? CANFD_MAX_DLEN : CAN_MAX_DLEN);
     if (channelID != 0x00000000) {
       clusterCanData.can_filter_set.insert(channelID);
     }
