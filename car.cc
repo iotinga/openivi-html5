@@ -6,13 +6,14 @@
 #include <assert.h>
 
 Car::Car(QObject *parent)
-    : QObject(parent), timer_(new QTimer(this)), mode(DATA_INPUT_NONE), speeds_index_(0), m_speed(0), m_rpm(0) {
+    : QObject(parent), timer_(new QTimer(this)), mode(DATA_INPUT_NONE), speeds_index_(0), m_speed(0), m_rpm(0), m_vbat(0) {
   dataMutex = new QMutex;
   canReader = NULL;
   clearData();
   // NULL pointers to channels, will be initialized during setup parsing
   clusterCanData.rpm_ch = NULL;
   clusterCanData.speed_ch = NULL;
+  clusterCanData.vbat_ch = NULL;
 
   /* Default port setup. */
   canSetupInfo.baudrate = 500000;
@@ -39,6 +40,18 @@ Car::~Car()
     delete canReader;
     canReader = NULL;
   }
+  if (clusterCanData.rpm_ch) {
+    delete clusterCanData.rpm_ch;
+    clusterCanData.rpm_ch = NULL;
+  }
+  if (clusterCanData.speed_ch) {
+    delete clusterCanData.speed_ch;
+    clusterCanData.speed_ch = NULL;
+  }
+  if (clusterCanData.vbat_ch) {
+    delete clusterCanData.vbat_ch;
+    clusterCanData.vbat_ch = NULL;
+  }
   delete dataMutex;
   dataMutex = NULL;
 }
@@ -50,6 +63,7 @@ void Car::Timer() {
       speeds_index_++;
       m_rpm = speeds_[speeds_index_] * 400;
       m_speed = speeds_index_;
+      m_vbat = 12.0;
       refresh_data();
       if (speeds_.size() <= speeds_index_) {
         speeds_index_ = 0;
@@ -63,6 +77,9 @@ void Car::Timer() {
         }
         if (clusterCanData.speed_ch != NULL) {
           m_speed = clusterCanData.speed_ch->GetCalibratedValue(clusterCanData.speed_raw);
+        }
+        if (clusterCanData.vbat_ch != NULL) {
+          m_vbat = clusterCanData.vbat_ch->GetCalibratedValue(clusterCanData.vbat_raw);
         }
         dataMutex->unlock();
         refresh_data();
@@ -88,6 +105,17 @@ void Car::setRpm(double rpmValue) {
 double Car::getRpm() {
   return m_rpm;
 }
+
+void Car::setVbat(double vbatValue)
+{
+  m_vbat = vbatValue;
+}
+
+double Car::getVbat()
+{
+  return m_vbat;
+}
+
 
 void Car::SetInputMode(DataInputMode inputMode)
 {
@@ -128,9 +156,11 @@ void Car::clearData()
 {
   m_speed = 0.0;
   m_rpm = 0.0;
+  m_vbat = 0.0;
   dataMutex->lock();
   clusterCanData.rpm_raw = 0;
   clusterCanData.speed_raw = 0;
+  clusterCanData.vbat_raw = 0;
   dataMutex->unlock();
 }
 
@@ -230,6 +260,11 @@ void Car::ParseChannelSetup(const QJsonObject& channelJson)
           clusterCanData.rpm_ch = new CANChannel("rpm");
         }
         channelObj = clusterCanData.rpm_ch;
+      } else if (channelName.compare("vbat") == 0) {
+        if (clusterCanData.vbat_ch == NULL) {
+          clusterCanData.vbat_ch = new CANChannel("vbat");
+        }
+        channelObj = clusterCanData.vbat_ch;
       }
     }
   }

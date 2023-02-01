@@ -79,16 +79,20 @@ void CanReader::run()
                 // (wait until a frame is read or timeout_ms is reached)
                 cRet = canBus->ReadFrame(&canFrame);
                 if (cRet == CRET_OK) {
-                    // DEBUG increase values as counters, then sleep for a while
                     dataMutex->lock();
                     if (canData->rpm_ch) {
                         if (canFrame.can_id == canData->rpm_ch->GetCAN_ID()) {
-                            canData->rpm_raw = canData->rpm_ch->GetValueFromCANFrame(&canFrame, portSetup.endianess); // ((uint32_t) canFrame.data[1]);
+                            canData->rpm_raw = canData->rpm_ch->GetValueFromCANFrame(&canFrame, portSetup.endianess);
                         }
                     }
                     if (canData->speed_ch) {
                         if (canFrame.can_id == canData->speed_ch->GetCAN_ID()) {
-                            canData->speed_raw = canData->speed_ch->GetValueFromCANFrame(&canFrame, portSetup.endianess); // (uint32_t) canFrame.data[4];
+                            canData->speed_raw = canData->speed_ch->GetValueFromCANFrame(&canFrame, portSetup.endianess);
+                        }
+                    }
+                    if (canData->vbat_ch) {
+                        if (canFrame.can_id == canData->vbat_ch->GetCAN_ID()) {
+                            canData->vbat_raw = canData->vbat_ch->GetValueFromCANFrame(&canFrame, portSetup.endianess);
                         }
                     }
                     dataMutex->unlock();

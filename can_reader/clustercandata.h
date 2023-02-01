@@ -14,8 +14,10 @@ typedef struct ClusterCANData_Struct
 	std::set<canid_t> can_filter_set;
 	CANChannel* speed_ch;
 	CANChannel* rpm_ch;
+	CANChannel* vbat_ch;
 	uint32_t speed_raw;
 	uint32_t rpm_raw;
+	uint32_t vbat_raw;
 } ClusterCANData;
 
 #endif
