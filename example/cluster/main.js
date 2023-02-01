@@ -42,7 +42,7 @@ function init() {
       if (window.car.vbat) {
         actualVbat = window.car.vbat;
       }
-      if (vbat_field != undefined) {
+      if (typeof(vbat_field) !== "undefined") {
         vbat_field.textContent = actualVbat.toFixed(1);
       }
 
