@@ -65,6 +65,7 @@ void WebGraphicView::resizeEvent(QResizeEvent *event) {
 void WebGraphicView::SetUrl(const QUrl &url) { view_->setUrl(url); }
 
 void WebGraphicView::FocusUpdate() {
+#ifdef USE_VIRTUAL_KEYBOARD
   QVariant r = page_->inputMethodQuery(Qt::ImSurroundingText);
   bool shouldDisplayKeyboard = r.isValid();
   if (keyboardVisible_ != shouldDisplayKeyboard) {
@@ -75,6 +76,7 @@ void WebGraphicView::FocusUpdate() {
     }
     keyboardVisible_ = shouldDisplayKeyboard;
   }
+#endif
 }
 
 void WebGraphicView::AddJavascriptObjectsToWindow() {

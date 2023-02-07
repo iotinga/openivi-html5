@@ -30,6 +30,8 @@
 #include "virtualkeyboard.h"
 #include "allowlocation_webpage.h"
 
+// #define USE_VIRTUAL_KEYBOARD
+
 class WebGraphicView : public QGraphicsView {
   Q_OBJECT
 
@@ -50,13 +52,15 @@ class WebGraphicView : public QGraphicsView {
   void AddJavascriptObjectsToWindow();
 
  private:
-  bool keyboardVisible_;
   AllowLocationWebPage *page_;
   QGraphicsWebView *view_;
   QGraphicsScene *scene_;
   QWebInspector *webInspector_;
   SoftwareLoadingManager *softwareLoadingManager_;
+#ifdef USE_VIRTUAL_KEYBOARD
+  bool keyboardVisible_;
   VirtualKeyboard virtualKeyboard_;
+#endif
   Car *car_;
 };
 
