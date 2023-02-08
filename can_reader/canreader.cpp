@@ -95,6 +95,11 @@ void CanReader::run()
                             canData->vbat_raw = canData->vbat_ch->GetValueFromCANFrame(&canFrame, portSetup.endianess);
                         }
                     }
+                    if (canData->gear_ch) {
+                        if (canFrame.can_id == canData->gear_ch->GetCAN_ID()) {
+                            canData->gear_raw = canData->gear_ch->GetValueFromCANFrame(&canFrame, portSetup.endianess);
+                        }
+                    }
                     dataMutex->unlock();
                 } else {
                     if (cRet != CRET_NOTHING_TO_READ) {

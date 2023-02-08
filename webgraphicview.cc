@@ -33,28 +33,40 @@ WebGraphicView::WebGraphicView(QWidget *parent)
       page_(new AllowLocationWebPage(this)),
       view_(new QGraphicsWebView),
       scene_(new QGraphicsScene(this)),
+#ifdef _ADVANCED_DEBUG
       webInspector_(new QWebInspector),
+#endif
       softwareLoadingManager_(new SoftwareLoadingManager(this)),
       car_(new Car(this)) {
+#ifdef _ADVANCED_DEBUG
   page_->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
-  page_->settings()->setAttribute(QWebSettings::LocalStorageEnabled, true);
-  page_->settings()->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls,
-                                  true);
+  page_->settings()->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls, true);
+#else
+  page_->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, false);
+  page_->settings()->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls, false);
   page_->setProperty("_q_webInspectorServerPort", 9221);
+#endif
+  page_->settings()->setAttribute(QWebSettings::LocalStorageEnabled, true);
   connect(page_->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()), this,
           SLOT(AddJavascriptObjectsToWindow()));
   view_->setPage(page_);
 
   setScene(scene_);
   scene_->addItem(view_);
+#ifdef _ADVANCED_DEBUG
   webInspector_->setPage(page_);
+#endif
 
+#ifdef USE_VIRTUAL_KEYBOARD
   connect(page_, SIGNAL(microFocusChanged()), this, SLOT(FocusUpdate()));
+#endif
 }
 
 WebGraphicView::~WebGraphicView() {
   delete view_;
+#ifdef _ADVANCED_DEBUG
   delete webInspector_;
+#endif
 }
 
 void WebGraphicView::resizeEvent(QResizeEvent *event) {

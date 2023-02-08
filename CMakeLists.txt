@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0.4)
 project(openivi-html5)
 
+set(ENABLE_ADVANCED_DEBUG OFF CACHE BOOL "Enable Advanced debug")
+
 # Tell CMake to run moc when necessary:
 set(CMAKE_AUTOMOC ON)
 # Tell CMake to run the UI compiler when necessary
@@ -11,7 +13,12 @@ set(CMAKE_AUTOMOC ON)
 # to always look for includes there:
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
+if (ENABLE_ADVANCED_DEBUG)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -D_ADVANCED_DEBUG")
+else(ENABLE_ADVANCED_DEBUG)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
+endif(ENABLE_ADVANCED_DEBUG)
+
 
 set(SocketCAN_DIR ${openivi-html5_SOURCE_DIR})
 

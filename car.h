@@ -34,6 +34,8 @@ class Car : public QObject {
   double getRpm();
   void setVbat(double vbatValue);
   double getVbat();
+  void setGear(double gearValue);
+  double getGear();
 
   int ParseSettingFile(const QString& path);
   void SetInputMode(DataInputMode inputMode);
@@ -41,6 +43,7 @@ class Car : public QObject {
   Q_PROPERTY(double rpm READ getRpm WRITE setRpm);
   Q_PROPERTY(double tps READ getTps WRITE setTps);
   Q_PROPERTY(double vbat READ getVbat WRITE setVbat);
+  Q_PROPERTY(double gear READ getGear WRITE setGear);
 signals:
   // void rpm(double rpm);
   void refresh_data();
@@ -71,6 +74,7 @@ signals:
   double m_speed;
   double m_rpm;
   double m_vbat;
+  double m_gear;
 
   // Setup info
   QJsonDocument clusterSetup;

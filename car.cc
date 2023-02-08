@@ -6,7 +6,7 @@
 #include <assert.h>
 
 Car::Car(QObject *parent)
-    : QObject(parent), timer_(new QTimer(this)), mode(DATA_INPUT_NONE), speeds_index_(0), m_speed(0), m_rpm(0), m_vbat(0) {
+    : QObject(parent), timer_(new QTimer(this)), mode(DATA_INPUT_NONE), speeds_index_(0), m_speed(0), m_rpm(0), m_vbat(0), m_gear(0) {
   dataMutex = new QMutex;
   canReader = NULL;
   clearData();
@@ -14,6 +14,7 @@ Car::Car(QObject *parent)
   clusterCanData.rpm_ch = NULL;
   clusterCanData.speed_ch = NULL;
   clusterCanData.vbat_ch = NULL;
+  clusterCanData.gear_ch = NULL;
 
   /* Default port setup. */
   canSetupInfo.baudrate = 500000;
@@ -52,6 +53,10 @@ Car::~Car()
     delete clusterCanData.vbat_ch;
     clusterCanData.vbat_ch = NULL;
   }
+  if (clusterCanData.gear_ch) {
+    delete clusterCanData.gear_ch;
+    clusterCanData.gear_ch = NULL;
+  }
   delete dataMutex;
   dataMutex = NULL;
 }
@@ -80,6 +85,9 @@ void Car::Timer() {
         }
         if (clusterCanData.vbat_ch != NULL) {
           m_vbat = clusterCanData.vbat_ch->GetCalibratedValue(clusterCanData.vbat_raw);
+        }
+        if (clusterCanData.gear_ch != NULL) {
+          m_gear = clusterCanData.gear_ch->GetCalibratedValue(clusterCanData.gear_raw);
         }
         dataMutex->unlock();
         refresh_data();
@@ -116,6 +124,15 @@ double Car::getVbat()
   return m_vbat;
 }
 
+void Car::setGear(double gearValue)
+{
+  m_gear = gearValue;
+}
+
+double Car::getGear()
+{
+  return m_gear;
+}
 
 void Car::SetInputMode(DataInputMode inputMode)
 {
@@ -161,6 +178,7 @@ void Car::clearData()
   clusterCanData.rpm_raw = 0;
   clusterCanData.speed_raw = 0;
   clusterCanData.vbat_raw = 0;
+  clusterCanData.gear_raw = 0;
   dataMutex->unlock();
 }
 
@@ -265,6 +283,11 @@ void Car::ParseChannelSetup(const QJsonObject& channelJson)
           clusterCanData.vbat_ch = new CANChannel("vbat");
         }
         channelObj = clusterCanData.vbat_ch;
+      } else if (channelName.compare("gear") == 0) {
+        if (clusterCanData.gear_ch == NULL) {
+          clusterCanData.gear_ch = new CANChannel("gear");
+        }
+        channelObj = clusterCanData.gear_ch;
       }
     }
   }

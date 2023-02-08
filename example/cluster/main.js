@@ -25,6 +25,7 @@ function init() {
   var oil_temp_dial = new Dial($('#oilTempNeedle'), 228, 185, 0, 80);
   var engine_coolant_dial = new Dial($('#engineCoolantNeedle'), 275, 324, 40, 140);
   var vbat_field = document.getElementById("vbatValue");
+  var gear_field = document.getElementById("gearValue");
 
   iat_dial.set(12);
   oil_temp_dial.set(50);
@@ -35,6 +36,7 @@ function init() {
       var actualRpm = 0;
       var actualSpeed = 1;
       var actualVbat = 12.0;
+      var actualGear = "N"
       if (window.car.rpm) {
         actualRpm = window.car.rpm;
       }
@@ -52,6 +54,17 @@ function init() {
         actualSpeed = window.car.tps;
       }
       speed.text(Math.floor(actualSpeed));
+      if (window.car.gear) {
+        if (window.car.gear > 0) {
+          actualGear = window.car.gear.toFixed(0);
+        } else if (window.car.gear < 0) {
+          actualGear = "R";
+        }
+      }
+      // alert(actualGear);
+      if (typeof gear_field !== "undefined") {
+         gear_field.textContent = actualGear;
+      }
     });
   } else if (window.console) {
     console.log("window.car not found");

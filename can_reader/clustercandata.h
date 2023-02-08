@@ -15,9 +15,11 @@ typedef struct ClusterCANData_Struct
 	CANChannel* speed_ch;
 	CANChannel* rpm_ch;
 	CANChannel* vbat_ch;
+	CANChannel* gear_ch;
 	uint32_t speed_raw;
 	uint32_t rpm_raw;
 	uint32_t vbat_raw;
+	uint32_t gear_raw;
 } ClusterCANData;
 
 #endif

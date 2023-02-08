@@ -23,7 +23,9 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsWebView>
+#ifdef _ADVANCED_DEBUG
 #include <QWebInspector>
+#endif
 
 #include "softwareloadingmanager.h"
 #include "car.h"
@@ -55,7 +57,9 @@ class WebGraphicView : public QGraphicsView {
   AllowLocationWebPage *page_;
   QGraphicsWebView *view_;
   QGraphicsScene *scene_;
+#ifdef _ADVANCED_DEBUG
   QWebInspector *webInspector_;
+#endif
   SoftwareLoadingManager *softwareLoadingManager_;
 #ifdef USE_VIRTUAL_KEYBOARD
   bool keyboardVisible_;
