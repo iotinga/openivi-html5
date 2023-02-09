@@ -88,6 +88,8 @@ int main(int argc, char *argv[]) {
 
   if (parser.isSet(fullScreen)) {
     w.ToggleFullScreen();
+    // a.setCursorVisible(false);
+    a.setOverrideCursor(Qt::BlankCursor);
   }
 
 
