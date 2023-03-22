@@ -18,6 +18,35 @@ Dial.prototype.fade = function (rate) {
   this.set(this.value * rate);
 }
 
+function update_phone_info() {
+  if (window.phone.name) {
+    document.getElementById("phone_name").textContent = window.phone.name;
+  }
+  if (window.phone.battery) {
+    document.getElementById("phone_battery").textContent = window.phone.battery + " %";
+  }
+  if (window.phone.carrier) {
+    document.getElementById("phone_op").textContent = window.phone.carrier;
+  }
+  if (window.phone.name) {
+    document.getElementById("phone_signal").textContent = window.phone.signal;
+  }
+}
+
+function update_call_info() {
+  var call_info = "";
+  var call_number = "";
+  if (window.phone.number) {
+    call_number = window.phone.number;
+  }
+  if (window.phone.status) {
+    if (window.phone.status !== "none") {
+      call_info = window.phone.status + " " + call_number;
+    }
+  }
+  document.getElementById("phone_call").textContent = call_info;
+}
+
 function init() {
   var iat_dial = new Dial($('#iatNeedle'), -143, 143, 0, 200);
   var rpm_dial = new Dial($('#rpmNeedle'), 5, 180, 0, 10000);
@@ -71,9 +100,13 @@ function init() {
   }
   // Phone connection
   if (window.phone) {
-    if (window.phone.name) {
-      document.getElementById("phone_info").textContent = window.phone.name;
-    }
+    update_phone_info();
+    window.phone.refresh_phone_info.connect(function () {
+      update_phone_info();
+    });
+    window.phone.update_call_status.connect(function () {
+      update_call_info();
+    });
   } else if (window.console) {
     console.log("window.phone not found");
   }

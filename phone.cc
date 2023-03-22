@@ -97,7 +97,7 @@ void Phone::InitModem(OfonoModem& modemInfo)
 			if (netInfo.size() > 0) {
 				QMap<QString, QVariant>::const_iterator netNameIter = netInfo.find("Name");
 				if (netNameIter != netInfo.end()) {
-					QString networkName = netNameIter.value().toString();
+					m_carrier = netNameIter.value().toString();
 					// ui->operatorLabel->setText(networkName);
 				}
 				QMap<QString, QVariant>::const_iterator netSignalIter = netInfo.find("Strength");
@@ -115,7 +115,7 @@ void Phone::InitModem(OfonoModem& modemInfo)
 			if (hfInfo.size() > 0) {
 				QMap<QString, QVariant>::const_iterator batteryIter = hfInfo.find("BatteryChargeLevel");
 				if (batteryIter != hfInfo.end()) {
-					m_battery = batteryIter.value().toInt();
+					m_battery = batteryIter.value().toInt()*BATTERY_PERCENTAGE_SCALE;
 					// ui->batteryLevel->setValue(batteryValue*20);
 				}
 			}
@@ -134,6 +134,9 @@ void Phone::InitModem(OfonoModem& modemInfo)
 			}
 			connect(ofonoVolume, SIGNAL(PropertyChanged(QString, QDBusVariant)), this, SLOT(OnVolumePropertyChanged(QString, QDBusVariant)));
 		}
+		/* Once everything is set up, emit refresh event to set up
+		 * phone status to HTML5 interface. */
+		refresh_phone_info();
 	}
 }
 
@@ -178,7 +181,7 @@ void Phone::OnCallStarted(const QDBusObjectPath& path, const QVariantMap& proper
 			qDebug() << "Waiting for response...";
 		} else {
 		}
-
+		update_call_status();
 	} else {
 		qDebug() << "New call: error reading properties!";
 	}
@@ -195,6 +198,7 @@ void Phone::OnCallClosed(const QDBusObjectPath& path)
 			ofonoVoiceCall = NULL;
 		}
 		qDebug() << "Current call terminated";
+		update_call_status();
 	}
 }
 
@@ -203,6 +207,7 @@ void Phone::OnCallPropertyChanged(const QString& propertyName, const QDBusVarian
 	qDebug() << "Call property " << propertyName << " changed to " << propertyValue.variant();
 	if (propertyName == "State") {
 		currentCallStatus = propertyValue.variant().toString();
+		update_call_status();
 	}
 }
 
@@ -211,6 +216,7 @@ void Phone::OnNetworkInfoChanged(const QString& propertyName, const QDBusVariant
 	qDebug() << "Network property " << propertyName << " changed to " << propertyValue.variant();
 	if (propertyName == "Strength") {
 		m_signal = propertyValue.variant().toInt();
+		refresh_phone_info();
 	}
 }
 

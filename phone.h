@@ -15,6 +15,12 @@
 #include "ofono/OfonoHandsfree.h"
 #include "ofono/OfonoCallVolume.h"
 
+/* Battery charge level is an integer ranging between 0 and 5.
+ * https://git.kernel.org/pub/scm/network/ofono/ofono.git/tree/doc/handsfree-api.txt
+ * To convert it to a percentage, multiply by 20.
+ */
+#define BATTERY_PERCENTAGE_SCALE    20
+
 /**
  * @todo write docs
  */
@@ -25,6 +31,7 @@ class Phone : public QObject
     Q_PROPERTY(QString name MEMBER m_name);
     Q_PROPERTY(QString status MEMBER currentCallStatus);
     Q_PROPERTY(QString number MEMBER currentCallNumber);
+    Q_PROPERTY(QString carrier MEMBER m_carrier);
     Q_PROPERTY(int signal MEMBER m_signal);
     Q_PROPERTY(int battery MEMBER m_battery);
     Q_PROPERTY(int volume MEMBER m_volume);
@@ -43,6 +50,10 @@ public:
     void InitOfono();
     /** Init one ofono modem to enable interface calls */
     void InitModem(OfonoModem& modemInfo);
+
+signals:
+    void refresh_phone_info();
+    void update_call_status();
 
 private slots:
     void OnCall(const QString& phoneNumber);
@@ -70,6 +81,7 @@ private:
     QString currentCallNumber;
     QString currentCallStatus;
     QString m_name;
+    QString m_carrier;
     int m_signal;
     int m_battery;
     int m_volume;
