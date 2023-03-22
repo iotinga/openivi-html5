@@ -29,6 +29,7 @@
 
 #include "softwareloadingmanager.h"
 #include "car.h"
+#include "phone.h"
 #include "virtualkeyboard.h"
 #include "allowlocation_webpage.h"
 
@@ -66,6 +67,7 @@ class WebGraphicView : public QGraphicsView {
   VirtualKeyboard virtualKeyboard_;
 #endif
   Car *car_;
+  Phone *phone_;
 };
 
 /* vim: set expandtab tabstop=2 shiftwidth=2: */

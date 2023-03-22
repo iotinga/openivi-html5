@@ -69,6 +69,14 @@ function init() {
   } else if (window.console) {
     console.log("window.car not found");
   }
+  // Phone connection
+  if (window.phone) {
+    if (window.phone.name) {
+      document.getElementById("phone_info").textContent = window.phone.name;
+    }
+  } else if (window.console) {
+    console.log("window.phone not found");
+  }
 }
 
 $(init);

@@ -2,7 +2,10 @@
 
 This provides a HTML5 runtime for OpenIVI Mobility applications. Documentation is at [the main OpenIVI docs site](https://openivimobility.github.io/developing/setting-up-an-html5-development-environment.html).
 
-This fork aims to integrate Linux SocketCAN interface to read data from CAN bus instead of a demo file.
+This fork aims to integrate some more features:
+
+- Linux SocketCAN interface to read data from CAN bus instead of a demo file.
+- [ofono](https://git.kernel.org/pub/scm/network/ofono/ofono.git/) interface to control connected phone via bluetooth.
 
 The interface is optimized for a 800x480 display, but can be easily adapted to different resolution acting on `mainwindow.ui` and HTML/CSS part.
 

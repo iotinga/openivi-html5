@@ -23,6 +23,7 @@
 #include <QMainWindow>
 #include <QUrl>
 #include "car.h"
+#include "phone.h"
 
 namespace Ui {
 class MainWindow;

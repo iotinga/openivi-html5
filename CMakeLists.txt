@@ -42,20 +42,22 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR} ${openivi-html5_SOURCE_DIR}/can_
 
 # Add subdirectory for CAN bus reading
 add_subdirectory(can_reader)
+# Add subdirectory for ofono interface classes
+add_subdirectory(ofono)
 
 add_executable(openivi-html5
         main.cc mainwindow.cc webgraphicview.cc softwareloadingmanager.cc
         car.cc installdetail.cc packageid.cc
-        virtualkeyboard.cc allowlocation_webpage.cc
+        virtualkeyboard.cc allowlocation_webpage.cc phone.cc
         ${DBUS_FILES} ${RCC_FILES} ${UI_MAINWINDOW})
 
 set_property(TARGET openivi-html5 PROPERTY CXX_STANDARD 11)
 
 if (X11_FOUND)
-  target_link_libraries(openivi-html5 canreader ${X11_LIBRARIES} Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets)
+  target_link_libraries(openivi-html5 canreader ofono-dash ${X11_LIBRARIES} Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets)
   include_directories(${X11_INCLUDE_DIR})
 else(X11_FOUND)
-  target_link_libraries(openivi-html5 canreader Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets)
+  target_link_libraries(openivi-html5 canreader ofono-dash Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets)
 endif(X11_FOUND)
 
 # qt5_use_modules(openivi-html5 Widgets DBus WebKitWidgets)

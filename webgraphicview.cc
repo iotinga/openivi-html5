@@ -37,7 +37,8 @@ WebGraphicView::WebGraphicView(QWidget *parent)
       webInspector_(new QWebInspector),
 #endif
       softwareLoadingManager_(new SoftwareLoadingManager(this)),
-      car_(new Car(this)) {
+      car_(new Car(this)),
+      phone_(new Phone(this)) {
 #ifdef _ADVANCED_DEBUG
   page_->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
   page_->settings()->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls, true);
@@ -104,6 +105,7 @@ void WebGraphicView::AddJavascriptObjectsToWindow() {
       "};");
 
   page_->currentFrame()->addToJavaScriptWindowObject("car", car_);
+  page_->currentFrame()->addToJavaScriptWindowObject("phone", phone_);
 }
 
 void WebGraphicView::AddSettings(const QString& settingFilePath)
