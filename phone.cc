@@ -7,6 +7,13 @@
 Phone::Phone(QObject *parent) : QObject(parent)
 {
 	m_name = "Disconnected";
+	currentCallNumber.clear();
+	currentCallStatus = "none";
+	m_carrier.clear();
+	m_signal = 0;
+	m_battery = 0;
+	m_volume = 0;
+	m_key = 0;
 	ofonoInterface = new OrgOfonoManagerInterface("org.ofono", "/", QDBusConnection::systemBus());
 	ofonoVoiceCallManager = NULL;
 	ofonoNetworkInfo = NULL;
@@ -14,7 +21,6 @@ Phone::Phone(QObject *parent) : QObject(parent)
 	ofonoVoiceCall = NULL;
 	ofonoVolume = NULL;
 
-	currentCallStatus = "none";
 
 	qDBusRegisterMetaType<ModemList>();
 	qDBusRegisterMetaType<OfonoModem>();
@@ -49,6 +55,19 @@ Phone::~Phone()
 	}
 	delete ofonoInterface;
 }
+
+void Phone::setLastKey(uint keyValue)
+{
+	m_key = keyValue;
+	// key_pressed();
+}
+
+uint Phone::getLastKey()
+{
+	return m_key;
+}
+
+
 
 void Phone::InitOfono()
 {

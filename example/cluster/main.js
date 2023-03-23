@@ -47,6 +47,12 @@ function update_call_info() {
   document.getElementById("phone_call").textContent = call_info;
 }
 
+function on_key_pressed() {
+  if (window.phone.lastkey) {
+    document.getElementById("last_key").textContent = (window.phone.lastkey).toString(16);
+  }
+}
+
 function init() {
   var iat_dial = new Dial($('#iatNeedle'), -143, 143, 0, 200);
   var rpm_dial = new Dial($('#rpmNeedle'), 5, 180, 0, 10000);
@@ -106,6 +112,9 @@ function init() {
     });
     window.phone.update_call_status.connect(function () {
       update_call_info();
+    });
+    window.phone.key_pressed.connect(function() {
+      on_key_pressed();
     });
   } else if (window.console) {
     console.log("window.phone not found");

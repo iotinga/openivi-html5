@@ -119,4 +119,11 @@ void WebGraphicView::SetInputMode(DataInputMode inputMode)
   car_->SetInputMode(inputMode);
 }
 
+void WebGraphicView::keyPressEvent(QKeyEvent *event)
+{
+  qDebug() << "Key pressed: " << event->key();
+  phone_->setLastKey(event->key());
+  phone_->key_pressed();
+}
+
 /* vim: set expandtab tabstop=2 shiftwidth=2: */

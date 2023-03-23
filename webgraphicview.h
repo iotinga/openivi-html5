@@ -26,14 +26,18 @@
 #ifdef _ADVANCED_DEBUG
 #include <QWebInspector>
 #endif
+#include <QKeyEvent>
+
+// #define USE_VIRTUAL_KEYBOARD
 
 #include "softwareloadingmanager.h"
 #include "car.h"
 #include "phone.h"
+#ifdef USE_VIRTUAL_KEYBOARD
 #include "virtualkeyboard.h"
+#endif
 #include "allowlocation_webpage.h"
 
-// #define USE_VIRTUAL_KEYBOARD
 
 class WebGraphicView : public QGraphicsView {
   Q_OBJECT
@@ -53,6 +57,7 @@ class WebGraphicView : public QGraphicsView {
 
  private slots:
   void AddJavascriptObjectsToWindow();
+  void keyPressEvent(QKeyEvent *event);
 
  private:
   AllowLocationWebPage *page_;

@@ -35,6 +35,7 @@ class Phone : public QObject
     Q_PROPERTY(int signal MEMBER m_signal);
     Q_PROPERTY(int battery MEMBER m_battery);
     Q_PROPERTY(int volume MEMBER m_volume);
+    Q_PROPERTY(uint lastkey MEMBER m_key READ getLastKey WRITE setLastKey);
 public:
     /**
      * Default constructor
@@ -51,9 +52,15 @@ public:
     /** Init one ofono modem to enable interface calls */
     void InitModem(OfonoModem& modemInfo);
 
+    void setLastKey(uint keyValue);
+    uint getLastKey();
+
+
 signals:
     void refresh_phone_info();
     void update_call_status();
+    // void key_pressed(uint key_input);
+    void key_pressed();
 
 private slots:
     void OnCall(const QString& phoneNumber);
@@ -85,7 +92,7 @@ private:
     int m_signal;
     int m_battery;
     int m_volume;
-
+    uint m_key;
 };
 
 #endif // PHONE_H
