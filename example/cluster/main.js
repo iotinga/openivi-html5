@@ -1,4 +1,7 @@
 
+var destinationNumber = "+0123456789";
+
+
 function Dial(jq_needle, minangle, maxangle, min, max) {
   this.jq_needle = jq_needle;
   this.minangle = minangle;
@@ -50,6 +53,22 @@ function update_call_info() {
 function on_key_pressed() {
   if (window.phone.lastkey) {
     document.getElementById("last_key").textContent = (window.phone.lastkey).toString(16);
+  }
+}
+
+function on_call_button_click() {
+  if (window.phone) {
+    if (window.phone.status === "incoming") {
+      window.phone.OnCall(window.phone.number);
+    } else {
+      window.phone.OnCall(destinationNumber);
+    }
+  }
+}
+
+function on_hangup_button_click() {
+  if (window.phone) {
+    window.phone.OnHangup();
   }
 }
 
@@ -113,8 +132,9 @@ function init() {
     window.phone.update_call_status.connect(function () {
       update_call_info();
     });
-    window.phone.key_pressed.connect(function() {
-      on_key_pressed();
+    window.phone.key_pressed.connect(function(key_value) {
+      // on_key_pressed();
+      document.getElementById("last_key").textContent = Number(key_value).toString(16);
     });
   } else if (window.console) {
     console.log("window.phone not found");

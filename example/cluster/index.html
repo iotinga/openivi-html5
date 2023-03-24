@@ -34,8 +34,10 @@
   <div style="color: white;border: 2px solid white;border-radius: 4px;padding: 8px 16px;width: 15%;top: 182px;left: 75%;position: absolute;">
     VBAT :<span id="vbatValue" style="font-size: 3em;font-weight:bold; float: right;">14.4</span>
   </div>
-  <div style="color: white;border: 2px solid white;border-radius: 4px;padding: 8px 16px;width: 15%;top: 282px;left: 55%;position: absolute;">
-    RIDE MODE :<span style="font-size: 3em;font-weight:bold; float: right;">1</span>
+  <div style="color: white;border: 2px solid white;border-radius: 4px;padding: 8px 16px;width: 15%;top: 282px;left: 55%;height: 80px; position: absolute;">
+    <!-- RIDE MODE :<span style="font-size: 3em;font-weight:bold; float: right;">1</span> -->
+    <div id="call_button" style="background-color: green; border: none; padding: 0px; border-radius: 4px; width:40%; height: 60px; position: absolute;  text-align: center; vertical-align: center;" onclick="on_call_button_click();">C</div>
+    <div id="hang_button" style="background-color: red; border: none; padding: 0px; border-radius: 4px; width:40%; height: 60px; left: 50%; position: absolute; text-align: center; vertical-align: center;" onclick="on_hangup_button_click();">H</div>
   </div>
   <div style="color: white;border: 2px solid white;border-radius: 4px;padding: 8px 16px;width: 15%;top: 282px;left: 75%;position: absolute;">
     LAST KEY :<span style="font-size: 3em;font-weight:bold; float: right;color: red;" id="last_key">0</span>

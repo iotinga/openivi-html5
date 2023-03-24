@@ -59,12 +59,13 @@ public:
 signals:
     void refresh_phone_info();
     void update_call_status();
-    // void key_pressed(uint key_input);
-    void key_pressed();
+    void key_pressed(uint key_input);
+//     void key_pressed();
 
-private slots:
+public slots:
     void OnCall(const QString& phoneNumber);
     void OnHangup();
+private slots:
     void OnCallStarted(const QDBusObjectPath &path, const QVariantMap &properties);
     void OnCallClosed(const QDBusObjectPath &path);
     void OnCallPropertyChanged(const QString &propertyName, const QDBusVariant &propertyValue);

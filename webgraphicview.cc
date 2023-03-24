@@ -123,7 +123,7 @@ void WebGraphicView::keyPressEvent(QKeyEvent *event)
 {
   qDebug() << "Key pressed: " << event->key();
   phone_->setLastKey(event->key());
-  phone_->key_pressed();
+  phone_->key_pressed(event->key());
 }
 
 /* vim: set expandtab tabstop=2 shiftwidth=2: */
