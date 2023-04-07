@@ -21,10 +21,12 @@
 #include "ui_mainwindow.h"
 #include <QFileDialog>
 #include <QSettings>
+#include <bluetooth/bluetoothmanager.h>
 
 MainWindow::MainWindow(QWidget *parent, const QUrl &force_url, DataInputMode inputMode, const QString &settingsPath)
     : QMainWindow(parent), ui_(new Ui::MainWindow) {
   ui_->setupUi(this);
+  // btManager = NULL;
   // Menu behaviours
   connect(ui_->actionOpen_URL, SIGNAL(triggered()), this,
           SLOT(OpenUrlDialog()));
@@ -32,6 +34,8 @@ MainWindow::MainWindow(QWidget *parent, const QUrl &force_url, DataInputMode inp
 
   connect(ui_->action_Full_Screen, SIGNAL(triggered()), this,
           SLOT(ToggleFullScreen()));
+
+  connect(ui_->actionBluetooth, SIGNAL(triggered()), this, SLOT(ManageBluetooth()));
 
   /* IMPORTANT: always set settings BEFORE changing input mode.
    * This way, CAN bus settings will be parsed when CAN reader
@@ -91,5 +95,18 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
     ToggleFullScreen();
   }
 }
+
+void MainWindow::ManageBluetooth()
+{
+  qDebug() << "Opening Bluetooth management Window";
+//   if (btManager == NULL) {
+//     btManager = new BluetoothManager(this);
+//     btManager->setModal(true);
+//     btManager->exec();
+//   }
+  BluetoothManager btManager(this);
+  btManager.exec();
+}
+
 
 /* vim: set expandtab tabstop=2 shiftwidth=2: */

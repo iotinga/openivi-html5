@@ -24,6 +24,7 @@
 #include <QUrl>
 #include "car.h"
 #include "phone.h"
+// #include <bluetooth/bluetoothmanager.h>
 
 namespace Ui {
 class MainWindow;
@@ -45,9 +46,11 @@ class MainWindow : public QMainWindow {
 
  private slots:
   void OpenUrlDialog();
+  void ManageBluetooth();
 
  private:
   Ui::MainWindow *ui_;
+  // BluetoothManager* btManager;
 };
 
 /* vim: set expandtab tabstop=2 shiftwidth=2: */

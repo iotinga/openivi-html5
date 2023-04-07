@@ -25,6 +25,7 @@ set(SocketCAN_DIR ${openivi-html5_SOURCE_DIR})
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5WebKitWidgets REQUIRED)
 find_package(Qt5DBus REQUIRED)
+find_package(Qt5Bluetooth REQUIRED)
 find_package(X11)
 
 find_program(CTAGS NAMES ctags)
@@ -44,6 +45,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR} ${openivi-html5_SOURCE_DIR}/can_
 add_subdirectory(can_reader)
 # Add subdirectory for ofono interface classes
 add_subdirectory(ofono)
+# Add subdirectory for bluetooth management (scan, pairing, etc)
+add_subdirectory(bluetooth)
 
 add_executable(openivi-html5
         main.cc mainwindow.cc webgraphicview.cc softwareloadingmanager.cc
@@ -54,10 +57,10 @@ add_executable(openivi-html5
 set_property(TARGET openivi-html5 PROPERTY CXX_STANDARD 11)
 
 if (X11_FOUND)
-  target_link_libraries(openivi-html5 canreader ofono-dash ${X11_LIBRARIES} Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets)
+  target_link_libraries(openivi-html5 canreader ofono-dash bt_manager ${X11_LIBRARIES} Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets Qt5::Bluetooth)
   include_directories(${X11_INCLUDE_DIR})
 else(X11_FOUND)
-  target_link_libraries(openivi-html5 canreader ofono-dash Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets)
+  target_link_libraries(openivi-html5 canreader ofono-dash bt_manager Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets Qt5::Bluetooth)
 endif(X11_FOUND)
 
 # qt5_use_modules(openivi-html5 Widgets DBus WebKitWidgets)

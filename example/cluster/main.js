@@ -1,7 +1,6 @@
 
 var destinationNumber = "+0123456789";
 
-
 function Dial(jq_needle, minangle, maxangle, min, max) {
   this.jq_needle = jq_needle;
   this.minangle = minangle;
@@ -31,7 +30,7 @@ function update_phone_info() {
   if (window.phone.carrier) {
     document.getElementById("phone_op").textContent = window.phone.carrier;
   }
-  if (window.phone.name) {
+  if (window.phone.signal) {
     document.getElementById("phone_signal").textContent = window.phone.signal;
   }
 }
