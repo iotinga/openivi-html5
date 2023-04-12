@@ -40,6 +40,7 @@ public:
 public slots:
     void addDevice(const QBluetoothDeviceInfo& btDevInfo);
     void pairingDone(const QBluetoothAddress& address, QBluetoothLocalDevice::Pairing pairing);
+    void pairingConfirm(const QBluetoothAddress &address, QString pin);
 
 private slots:
     void startScan();
@@ -60,6 +61,7 @@ private:
 
     QString selectedDeviceName;
     QBluetoothAddress selectedDeviceAddress;
+
 };
 
 #endif // BLUETOOTHMANAGER_H

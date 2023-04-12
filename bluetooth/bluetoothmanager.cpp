@@ -7,6 +7,10 @@
 
 #include <QDebug>
 
+#include "bluez_deviceinterface.h"
+
+#define LOCAL_INTERFACE_DEVICE_NAME "hci0"
+
 BluetoothManager::BluetoothManager(QWidget* parent)
     : QDialog(parent), localDevice(new QBluetoothLocalDevice), m_ui(new Ui::BluetoothManager)
 {
@@ -28,6 +32,7 @@ BluetoothManager::BluetoothManager(QWidget* parent)
     connect(localDevice, SIGNAL(deviceConnected(const QBluetoothAddress &)), this, SLOT(onDeviceConnected(const QBluetoothAddress &)));
     connect(localDevice, SIGNAL(deviceDisconnected(const QBluetoothAddress &)), this, SLOT(onDeviceDisconnected(const QBluetoothAddress &)));
     connect(localDevice, SIGNAL(pairingFinished(QBluetoothAddress,QBluetoothLocalDevice::Pairing)), this, SLOT(pairingDone(QBluetoothAddress,QBluetoothLocalDevice::Pairing)));
+    connect(localDevice, SIGNAL(pairingDisplayConfirmation(const QBluetoothAddress&, QString)), this, SLOT(pairingConfirm(const QBluetoothAddress&, QString)));
 }
 
 BluetoothManager::~BluetoothManager()
@@ -55,6 +60,11 @@ void BluetoothManager::addDevice(const QBluetoothDeviceInfo& btDevInfo)
                 break;
         }
         item->setForeground(devPairColor);
+        // Set background if device is connected
+        QList<QBluetoothAddress> connectedDevices = localDevice->connectedDevices();
+        if (connectedDevices.indexOf(btDevInfo.address()) >= 0) {
+            item->setBackground(QColor(110, 170, 255));
+        }
 
         m_ui->listWidget->addItem(item);
     }
@@ -62,15 +72,25 @@ void BluetoothManager::addDevice(const QBluetoothDeviceInfo& btDevInfo)
 
 void BluetoothManager::startScan()
 {
-    discoveryAgent->start();
-    m_ui->scanButton->setEnabled(false);
-    m_ui->listWidget->clear();
-    m_ui->infoLabel->setText("Scan in progress...");
+    if (discoveryAgent->isActive()) {
+        // Stop scanning
+        discoveryAgent->stop();
+        m_ui->scanButton->setText("Scan");
+        m_ui->infoLabel->setText("");
+    } else {
+        m_ui->listWidget->clear();
+        discoveryAgent->start();
+        m_ui->scanButton->setText("Stop scanning");
+        m_ui->infoLabel->setText("Scan in progress...");
+        m_ui->pairButton->setEnabled(false);
+        m_ui->unpairButton->setEnabled(false);
+    }
+    // m_ui->scanButton->setEnabled(false);
 }
 
 void BluetoothManager::scanFinished()
 {
-    m_ui->scanButton->setEnabled(true);
+    m_ui->scanButton->setText("Scan");
     m_ui->infoLabel->setText("");
 }
 
@@ -82,6 +102,31 @@ void BluetoothManager::bluetoothDeviceSelected(QListWidgetItem* item)
     selectedDeviceAddress = getDeviceAddress(deviceText);
 
     qDebug() << "Selected bluetooth device (" << selectedDeviceName << ") [" << selectedDeviceAddress.toString() << "]";
+
+
+    if (localDevice->pairingStatus(selectedDeviceAddress) == QBluetoothLocalDevice::Unpaired) {
+        // Device not paired, only enable pairing button
+        m_ui->pairButton->setEnabled(true);
+        m_ui->unpairButton->setEnabled(false);
+        m_ui->pairButton->setText("Pair");
+    } else {
+        QList<QBluetoothAddress> connectedDevices = localDevice->connectedDevices();
+        if (connectedDevices.indexOf(selectedDeviceAddress) >= 0) {
+            // Device is already connected, can only disconnect
+            m_ui->pairButton->setEnabled(false);
+            m_ui->unpairButton->setEnabled(true);
+            m_ui->pairButton->setText("Connect");
+            m_ui->unpairButton->setText("Disconnect");
+        } else {
+            // Device is paired, but not connected already connected
+            // can forget or connect
+            m_ui->pairButton->setEnabled(true);
+            m_ui->unpairButton->setEnabled(true);
+            m_ui->pairButton->setText("Connect");
+            m_ui->unpairButton->setText("Forget pairing");
+        }
+    }
+
 }
 
 QString BluetoothManager::getDeviceName(QString displayString)
@@ -112,23 +157,59 @@ QBluetoothAddress BluetoothManager::getDeviceAddress(QString displayString)
 
 void BluetoothManager::pairDevice()
 {
+    OrgBluezDevice1Interface* bluezDeviceInterface = NULL;
+    QString deviceObjectPath = "/org/bluez/";
+
     if (selectedDeviceName.isEmpty() || selectedDeviceAddress.isNull()) {
         // Invalid selection, return
         return;
     }
 
-    localDevice->requestPairing(selectedDeviceAddress, QBluetoothLocalDevice::Paired);
+    if (localDevice->pairingStatus(selectedDeviceAddress) == QBluetoothLocalDevice::Unpaired) {
+        localDevice->requestPairing(selectedDeviceAddress, QBluetoothLocalDevice::Paired);
+    } else {
+        deviceObjectPath.append(LOCAL_INTERFACE_DEVICE_NAME);
+        deviceObjectPath.append("/dev_");
+        deviceObjectPath.append(selectedDeviceAddress.toString().replace(":", "_"));
+        bluezDeviceInterface = new OrgBluezDevice1Interface("org.bluez", deviceObjectPath, QDBusConnection::systemBus());
+        if (!bluezDeviceInterface->connected()) {
+            bluezDeviceInterface->Connect();
+        }
+        delete bluezDeviceInterface;
+    }
 }
 
 void BluetoothManager::unpairDevice()
 {
+    OrgBluezDevice1Interface* bluezDeviceInterface = NULL;
+    QString deviceObjectPath = "/org/bluez/";
+
     if (selectedDeviceName.isEmpty() || selectedDeviceAddress.isNull()) {
         // Invalid selection, return
         return;
     }
 
-    localDevice->requestPairing(selectedDeviceAddress, QBluetoothLocalDevice::Unpaired);
+    if (localDevice->pairingStatus(selectedDeviceAddress) != QBluetoothLocalDevice::Unpaired) {
+        localDevice->requestPairing(selectedDeviceAddress, QBluetoothLocalDevice::Unpaired);
+    } else {
+        deviceObjectPath.append(LOCAL_INTERFACE_DEVICE_NAME);
+        deviceObjectPath.append("/dev_");
+        deviceObjectPath.append(selectedDeviceAddress.toString().replace(":", "_"));
+        bluezDeviceInterface = new OrgBluezDevice1Interface("org.bluez", deviceObjectPath, QDBusConnection::systemBus());
+        if (bluezDeviceInterface->connected()) {
+            bluezDeviceInterface->Disconnect();
+        }
+        delete bluezDeviceInterface;
+    }
 }
+
+void BluetoothManager::pairingConfirm(const QBluetoothAddress& address, QString pin)
+{
+    qDebug() << "Pairing device " << address.toString() << " with passcode " << pin;
+
+    localDevice->pairingConfirmation(true);
+}
+
 
 void BluetoothManager::pairingDone(const QBluetoothAddress& address, QBluetoothLocalDevice::Pairing pairing)
 {
@@ -149,26 +230,41 @@ void BluetoothManager::pairingDone(const QBluetoothAddress& address, QBluetoothL
     for (int var = 0; var < items.count(); ++var) {
         QListWidgetItem *item = items.at(var);
         item->setForeground(devPairColor);
+        // This forces to refresh the buttons
+        if (items.at(var) == m_ui->listWidget->currentItem()) {
+            bluetoothDeviceSelected(items.at(var));
+        }
     }
 }
 
 
 void BluetoothManager::onDeviceConnected(const QBluetoothAddress& address)
 {
+    qDebug() << "Device connected " << address.toString();
     QList<QListWidgetItem *> items = m_ui->listWidget->findItems(address.toString(), Qt::MatchContains);
     if (!items.empty()) {
         for (qsizetype dd = 0; dd < items.size(); ++dd) {
             items.at(dd)->setBackground(QColor(110, 170, 255));
+            // This forces to refresh the buttons
+            if (items.at(dd) == m_ui->listWidget->currentItem()) {
+                bluetoothDeviceSelected(items.at(dd));
+            }
+
         }
     }
 }
 
 void BluetoothManager::onDeviceDisconnected(const QBluetoothAddress& address)
 {
+    qDebug() << "Device disconnected " << address.toString();
     QList<QListWidgetItem *> items = m_ui->listWidget->findItems(address.toString(), Qt::MatchContains);
     if (!items.empty()) {
         for (qsizetype dd = 0; dd < items.size(); ++dd) {
             items.at(dd)->setBackground(Qt::white);
+            // This forces to refresh the buttons
+            if (items.at(dd) == m_ui->listWidget->currentItem()) {
+                bluetoothDeviceSelected(items.at(dd));
+            }
         }
     }
 }
