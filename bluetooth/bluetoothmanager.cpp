@@ -243,7 +243,7 @@ void BluetoothManager::onDeviceConnected(const QBluetoothAddress& address)
     qDebug() << "Device connected " << address.toString();
     QList<QListWidgetItem *> items = m_ui->listWidget->findItems(address.toString(), Qt::MatchContains);
     if (!items.empty()) {
-        for (qsizetype dd = 0; dd < items.size(); ++dd) {
+        for (int dd = 0; dd < items.size(); ++dd) {
             items.at(dd)->setBackground(QColor(110, 170, 255));
             // This forces to refresh the buttons
             if (items.at(dd) == m_ui->listWidget->currentItem()) {
@@ -259,7 +259,7 @@ void BluetoothManager::onDeviceDisconnected(const QBluetoothAddress& address)
     qDebug() << "Device disconnected " << address.toString();
     QList<QListWidgetItem *> items = m_ui->listWidget->findItems(address.toString(), Qt::MatchContains);
     if (!items.empty()) {
-        for (qsizetype dd = 0; dd < items.size(); ++dd) {
+        for (int dd = 0; dd < items.size(); ++dd) {
             items.at(dd)->setBackground(Qt::white);
             // This forces to refresh the buttons
             if (items.at(dd) == m_ui->listWidget->currentItem()) {
