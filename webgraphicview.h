@@ -52,8 +52,13 @@ class WebGraphicView : public QGraphicsView {
 
   void AddSettings(const QString& settingFilePath);
   void SetInputMode(DataInputMode inputMode);
+
+ signals:
+   void open_bluetooth_manager();
+
  public slots:
   void FocusUpdate();
+  void OnOpenBluetoothManager();
 
  private slots:
   void AddJavascriptObjectsToWindow();

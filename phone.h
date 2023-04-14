@@ -9,6 +9,7 @@
 
 // Include ofono classes generated from D-Bus interfaces
 #include "ofono/OfonoManager.h"
+#include "ofono/OfonoModem.h"
 #include "ofono/OfonoVoiceCallManager.h"
 #include "ofono/OfonoVoiceCall.h"
 #include "ofono/OfonoNetworkRegistration.h"
@@ -51,20 +52,26 @@ public:
     void InitOfono();
     /** Init one ofono modem to enable interface calls */
     void InitModem(OfonoModem& modemInfo);
+    /** Clear current modem (used to change it) */
+    void ClearCurrentModem();
+    /** Update current modem when one is connected/disconnected. */
+    void UpdateCurrentModem();
 
     void setLastKey(uint keyValue);
     uint getLastKey();
-
 
 signals:
     void refresh_phone_info();
     void update_call_status();
     void key_pressed(uint key_input);
 //     void key_pressed();
+    void open_bluetooth_manager();
 
 public slots:
     void OnCall(const QString& phoneNumber);
     void OnHangup();
+    void OnOpenBluetoothManager();
+
 private slots:
     void OnCallStarted(const QDBusObjectPath &path, const QVariantMap &properties);
     void OnCallClosed(const QDBusObjectPath &path);
@@ -72,6 +79,9 @@ private slots:
     void OnNetworkInfoChanged(const QString &propertyName, const QDBusVariant &propertyValue);
     void OnHandsfreePropertyChanged(const QString &propertyName, const QDBusVariant &propertyValue);
     void OnVolumePropertyChanged(const QString &propertyName, const QDBusVariant &propertyValue);
+    void OnModemPropertyChanged(const QString &propertyName, const QDBusVariant &propertyValue);
+    void OnModemAdded(const QDBusObjectPath &path, const QVariantMap &properties);
+    void OnModemRemoved(const QDBusObjectPath &path);
 
 private:
     // Ofono general interfaces
@@ -80,6 +90,11 @@ private:
     OrgOfonoNetworkRegistrationInterface *ofonoNetworkInfo;
     OrgOfonoHandsfreeInterface *ofonoHandsfreeInfo;
     OrgOfonoCallVolumeInterface *ofonoVolume;
+
+    // Modem list objects
+    ModemList modems;
+    QList<OrgOfonoModemInterface*> ofonoModemInterfaces;
+    int currentModemIndex;
 
     // Voice call objects
     OrgOfonoVoiceCallInterface *ofonoVoiceCall;

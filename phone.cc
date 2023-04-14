@@ -4,6 +4,8 @@
 
 #include "phone.h"
 
+#define NO_ACTIVE_MODEM -1
+
 Phone::Phone(QObject *parent) : QObject(parent)
 {
 	m_name = "Disconnected";
@@ -20,7 +22,7 @@ Phone::Phone(QObject *parent) : QObject(parent)
 	ofonoHandsfreeInfo = NULL;
 	ofonoVoiceCall = NULL;
 	ofonoVolume = NULL;
-
+	currentModemIndex = NO_ACTIVE_MODEM;
 
 	qDBusRegisterMetaType<ModemList>();
 	qDBusRegisterMetaType<OfonoModem>();
@@ -33,13 +35,25 @@ Phone::Phone(QObject *parent) : QObject(parent)
 
 Phone::~Phone()
 {
-	if (ofonoVoiceCall != NULL) {
-		delete ofonoVoiceCall;
-		ofonoVoiceCall = NULL;
+	for (int mm = 0; mm < ofonoModemInterfaces.size(); mm++) {
+		delete ofonoModemInterfaces[mm];
 	}
+	ofonoModemInterfaces.clear();
 	if (ofonoNetworkInfo != NULL) {
 		delete ofonoNetworkInfo;
 		ofonoNetworkInfo = NULL;
+	}
+
+	ClearCurrentModem();
+
+	delete ofonoInterface;
+}
+
+void Phone::ClearCurrentModem()
+{
+	if (ofonoVoiceCall != NULL) {
+		delete ofonoVoiceCall;
+		ofonoVoiceCall = NULL;
 	}
 	if (ofonoHandsfreeInfo != NULL) {
 		delete ofonoHandsfreeInfo;
@@ -53,7 +67,7 @@ Phone::~Phone()
 		delete ofonoVoiceCallManager;
 		ofonoVoiceCallManager = NULL;
 	}
-	delete ofonoInterface;
+	currentModemIndex = NO_ACTIVE_MODEM;
 }
 
 void Phone::setLastKey(uint keyValue)
@@ -67,16 +81,20 @@ uint Phone::getLastKey()
 	return m_key;
 }
 
-
-
 void Phone::InitOfono()
 {
 	int i = 0;
 	QString modemName = "Unknown";
-	bool online = false;
+	bool online = false, onlineFound = false;
+	OrgOfonoModemInterface* modemIface = NULL;
 	if (ofonoInterface != NULL) {
 		qDebug() << "Ofono interface initialized";
-		ModemList modems = ofonoInterface->GetModems();
+
+		connect(ofonoInterface, SIGNAL(ModemAdded(const QDBusObjectPath &, const QVariantMap &)), this, SLOT(OnModemAdded(const QDBusObjectPath &, const QVariantMap &)));
+    connect(ofonoInterface, SIGNAL(ModemRemoved(const QDBusObjectPath &)), this, SLOT(OnModemRemoved(const QDBusObjectPath&)));
+
+		// ModemList modems = ofonoInterface->GetModems();
+		modems = ofonoInterface->GetModems();
 		qDebug() << "Found " << modems.size() << " modem";
 		for (i = 0; i < modems.size(); i++) {
 			OfonoModem modem = modems.value(i);
@@ -88,15 +106,24 @@ void Phone::InitOfono()
 			if (modemOnlineIter != modem.properties.end()) {
 				online = modemOnlineIter.value().toBool();
 			}
+			// Init a modem interface to catch connect/disconnect events
+			modemIface = new OrgOfonoModemInterface("org.ofono", modem.objectPath.path(), QDBusConnection::systemBus());
+			if (modemIface != NULL) {
+				connect(modemIface, SIGNAL(PropertyChanged(QString, QDBusVariant)), this, SLOT(OnModemPropertyChanged(QString, QDBusVariant)));
+				ofonoModemInterfaces.append(modemIface);
+			}
+
 			qDebug() << "Modem [" << i << "] : " << modem.objectPath.path();
 			qDebug() << "Modem name: " << modemName;
 			qDebug() << "Online: " << online;
 			// if (i == 0) {
 			if (online) {
 				m_name = modemName;
-				if (online) {
+				if (!onlineFound) {
 					InitModem(modem);
-					break;
+					currentModemIndex = i;
+					// break;
+					onlineFound = true;
 				}
 			}
 		}
@@ -159,6 +186,16 @@ void Phone::InitModem(OfonoModem& modemInfo)
 	}
 }
 
+void Phone::OnModemAdded(const QDBusObjectPath &path, const QVariantMap &properties)
+{
+	qDebug() << "Added ofono modem at " << path.path() << " with " << properties.size() << " properties";
+}
+
+void Phone::OnModemRemoved(const QDBusObjectPath &path)
+{
+	qDebug() << "Removed ofono modem at " << path.path();
+}
+
 void Phone::OnCall(const QString& phoneNumber)
 {
 	if (ofonoVoiceCallManager != NULL) {
@@ -180,6 +217,12 @@ void Phone::OnHangup()
 		qDebug() << "Hanging up...";
 	}
 }
+
+void Phone::OnOpenBluetoothManager()
+{
+	open_bluetooth_manager();
+}
+
 
 void Phone::OnCallStarted(const QDBusObjectPath& path, const QVariantMap& properties)
 {
@@ -252,5 +295,73 @@ void Phone::OnVolumePropertyChanged(const QString& propertyName, const QDBusVari
 	qDebug() << "Volume property " << propertyName << " changed to " << propertyValue.variant();
 	if (propertyName == "SpeakerVolume") {
 		m_volume = propertyValue.variant().toInt();
+	}
+}
+
+void Phone::OnModemPropertyChanged(const QString& propertyName, const QDBusVariant& propertyValue)
+{
+	qDebug() << "Modem property " << propertyName << " changed to " << propertyValue.variant();
+	if (propertyName == "Online") {
+		QThread::msleep(500);
+		UpdateCurrentModem();
+	}
+}
+
+void Phone::UpdateCurrentModem()
+{
+	/* As the PropertyChanged signal does not contain the reference
+	 * to the emitter, it is easier to scan the modem list and set
+	 * new current modem. It should not be a performance issue, as
+	 * normally a device has only few paired phones. */
+	/* For this demo application, only one phone/modem is considered
+	 * connected at once, even though more than one device may be
+	 * available. So, when multiple ofono modems are online, the
+	 * selection logic is as follows:
+	 * - If previously connected modem is still connected, do
+	 *   nothing.
+	 * - Otherwise, select the fist onlin modem in the modem list
+	 *   (which should be in chronological order of pairing). */
+	int mm = -1;
+	bool isOnline = false;
+
+	// Re-read modem info from ofono interface
+	modems.clear();
+	modems = ofonoInterface->GetModems();
+
+	if (currentModemIndex != NO_ACTIVE_MODEM) {
+		OfonoModem currentModem = modems.value(currentModemIndex);
+		QMap<QString, QVariant>::const_iterator modemOnlineIter = currentModem.properties.find("Online");
+		if (modemOnlineIter != currentModem.properties.end()) {
+			bool currentOnline = modemOnlineIter.value().toBool();
+			if (currentOnline) {
+				return;
+			}
+		}
+	}
+	// Previous current is not online, or there were no online modems
+	for (mm = 0; mm < modems.size(); mm++) {
+		OfonoModem modem = modems.value(mm);
+		QMap<QString, QVariant>::const_iterator modemIter = modem.properties.find("Online");
+		if (modemIter != modem.properties.end()) {
+			isOnline = modemIter.value().toBool();
+			if (isOnline) {
+				// One modem online found: use it and exit loop
+				ClearCurrentModem();
+				InitModem(modem);
+				currentModemIndex = mm;
+				break;
+			}
+		}
+	}
+	if (mm >= modems.size()) {
+		// No online modem
+		ClearCurrentModem();
+		currentModemIndex = NO_ACTIVE_MODEM;
+		m_name = "Disconnected";
+		m_carrier.clear();
+		m_signal = 0;
+		m_battery = 0;
+		m_volume = 0;
+		refresh_phone_info();
 	}
 }

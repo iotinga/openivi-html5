@@ -25,6 +25,8 @@
 
 MainWindow::MainWindow(QWidget *parent, const QUrl &force_url, DataInputMode inputMode, const QString &settingsPath)
     : QMainWindow(parent), ui_(new Ui::MainWindow) {
+  QWebSettings::globalSettings()->enablePersistentStorage();
+
   ui_->setupUi(this);
   // btManager = NULL;
   // Menu behaviours
@@ -36,6 +38,8 @@ MainWindow::MainWindow(QWidget *parent, const QUrl &force_url, DataInputMode inp
           SLOT(ToggleFullScreen()));
 
   connect(ui_->actionBluetooth, SIGNAL(triggered()), this, SLOT(ManageBluetooth()));
+
+  connect(ui_->graphicsView, SIGNAL(open_bluetooth_manager()), this, SLOT(ManageBluetooth()));
 
   /* IMPORTANT: always set settings BEFORE changing input mode.
    * This way, CAN bus settings will be parsed when CAN reader
@@ -105,6 +109,9 @@ void MainWindow::ManageBluetooth()
 //     btManager->exec();
 //   }
   BluetoothManager btManager(this);
+  if (isFullScreen()) {
+    btManager.setWindowState(Qt::WindowFullScreen);
+  }
   btManager.exec();
 }
 

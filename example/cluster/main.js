@@ -71,6 +71,12 @@ function on_hangup_button_click() {
   }
 }
 
+function open_phone_settings() {
+  if (window.phone) {
+    window.phone.OnOpenBluetoothManager();
+  }
+}
+
 function init() {
   var iat_dial = new Dial($('#iatNeedle'), -143, 143, 0, 200);
   var rpm_dial = new Dial($('#rpmNeedle'), 5, 180, 0, 10000);

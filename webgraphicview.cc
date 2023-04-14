@@ -61,6 +61,7 @@ WebGraphicView::WebGraphicView(QWidget *parent)
 #ifdef USE_VIRTUAL_KEYBOARD
   connect(page_, SIGNAL(microFocusChanged()), this, SLOT(FocusUpdate()));
 #endif
+  connect(phone_, SIGNAL(open_bluetooth_manager()), this, SLOT(OnOpenBluetoothManager()));
 }
 
 WebGraphicView::~WebGraphicView() {
@@ -125,5 +126,11 @@ void WebGraphicView::keyPressEvent(QKeyEvent *event)
   phone_->setLastKey(event->key());
   phone_->key_pressed(event->key());
 }
+
+void WebGraphicView::OnOpenBluetoothManager()
+{
+  open_bluetooth_manager();
+}
+
 
 /* vim: set expandtab tabstop=2 shiftwidth=2: */
