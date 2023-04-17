@@ -188,12 +188,37 @@ void Phone::InitModem(OfonoModem& modemInfo)
 
 void Phone::OnModemAdded(const QDBusObjectPath &path, const QVariantMap &properties)
 {
+	OrgOfonoModemInterface* modemIface = NULL;
 	qDebug() << "Added ofono modem at " << path.path() << " with " << properties.size() << " properties";
+
+	// Init a modem interface to catch connect/disconnect events
+	modemIface = new OrgOfonoModemInterface("org.ofono", path.path(), QDBusConnection::systemBus());
+	if (modemIface != NULL) {
+		connect(modemIface, SIGNAL(PropertyChanged(QString, QDBusVariant)), this, SLOT(OnModemPropertyChanged(QString, QDBusVariant)));
+		ofonoModemInterfaces.append(modemIface);
+	}
+
+	UpdateCurrentModem();
 }
 
 void Phone::OnModemRemoved(const QDBusObjectPath &path)
 {
 	qDebug() << "Removed ofono modem at " << path.path();
+
+	OrgOfonoModemInterface* modemIface = NULL;
+
+	for (int mdm = 0; mdm < ofonoModemInterfaces.size(); mdm++) {
+		modemIface = ofonoModemInterfaces.at(mdm);
+		if (modemIface) {
+			if (modemIface->path() == path.path()) {
+				disconnect(modemIface, SIGNAL(PropertyChanged(QString, QDBusVariant)), this, SLOT(OnModemPropertyChanged(QString, QDBusVariant)));
+				ofonoModemInterfaces.removeAt(mdm);
+				break;
+			}
+		}
+	}
+
+	UpdateCurrentModem();
 }
 
 void Phone::OnCall(const QString& phoneNumber)
@@ -347,6 +372,10 @@ void Phone::UpdateCurrentModem()
 			if (isOnline) {
 				// One modem online found: use it and exit loop
 				ClearCurrentModem();
+				QMap<QString, QVariant>::const_iterator modemNameIter = modem.properties.find("Name");
+				if (modemNameIter != modem.properties.end()) {
+					m_name = modemNameIter.value().toString();
+				}
 				InitModem(modem);
 				currentModemIndex = mm;
 				break;
