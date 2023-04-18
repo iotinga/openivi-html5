@@ -8,6 +8,7 @@
 #include <QDialog>
 #include <QScopedPointer>
 #include <QListWidgetItem>
+#include <QKeyEvent>
 #include <QtBluetooth/QBluetoothLocalDevice>
 #include <QtBluetooth/QBluetoothDeviceInfo>
 #include <QtBluetooth/QBluetoothDeviceDiscoveryAgent>
@@ -50,6 +51,7 @@ private slots:
     void unpairDevice();
     void onDeviceConnected(const QBluetoothAddress &address);
     void onDeviceDisconnected(const QBluetoothAddress &address);
+    void keyPressEvent(QKeyEvent *event);
 
 private:
     QString getDeviceName(QString displayString);

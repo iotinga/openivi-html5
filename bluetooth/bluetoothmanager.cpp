@@ -11,6 +11,16 @@
 
 #define LOCAL_INTERFACE_DEVICE_NAME "hci0"
 
+// Map key presses to input events in interface
+#define INPUT_KEY_PLUS_PC   0x01000014
+#define INPUT_KEY_MINUS_PC  0x01000012
+#define INPUT_KEY_ENTER_PC  0x01000004
+#define INPUT_KEY_BACK_PC   0x01000003
+#define INPUT_KEY_PLUS_MD   0x72
+#define INPUT_KEY_MINUS_MD  0x71
+#define INPUT_KEY_ENTER_MD  0x24
+#define INPUT_KEY_BACK_MD   0x16
+
 BluetoothManager::BluetoothManager(QWidget* parent)
     : QDialog(parent), localDevice(new QBluetoothLocalDevice), m_ui(new Ui::BluetoothManager)
 {
@@ -29,6 +39,7 @@ BluetoothManager::BluetoothManager(QWidget* parent)
             this, SLOT(addDevice(QBluetoothDeviceInfo)));
     connect(discoveryAgent, SIGNAL(finished()), this, SLOT(scanFinished()));
     connect(m_ui->listWidget, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(bluetoothDeviceSelected(QListWidgetItem*)));
+    connect(m_ui->listWidget, SIGNAL(itemChanged(QListWidgetItem*)), this, SLOT(bluetoothDeviceSelected(QListWidgetItem*)));
     connect(localDevice, SIGNAL(deviceConnected(const QBluetoothAddress &)), this, SLOT(onDeviceConnected(const QBluetoothAddress &)));
     connect(localDevice, SIGNAL(deviceDisconnected(const QBluetoothAddress &)), this, SLOT(onDeviceDisconnected(const QBluetoothAddress &)));
     connect(localDevice, SIGNAL(pairingFinished(QBluetoothAddress,QBluetoothLocalDevice::Pairing)), this, SLOT(pairingDone(QBluetoothAddress,QBluetoothLocalDevice::Pairing)));
@@ -267,4 +278,54 @@ void BluetoothManager::onDeviceDisconnected(const QBluetoothAddress& address)
             }
         }
     }
+}
+
+void BluetoothManager::keyPressEvent(QKeyEvent *event)
+{
+  qDebug() << "Key pressed: " << event->key();
+  int currRow = 0;
+  QListWidgetItem* deviceItem = NULL;
+
+  switch (event->key()) {
+      case INPUT_KEY_PLUS_PC:
+      case INPUT_KEY_PLUS_MD:
+      case Qt::Key_Up: {
+        if (m_ui->listWidget->hasFocus()) {
+            deviceItem = m_ui->listWidget->currentItem();
+            currRow = m_ui->listWidget->row(deviceItem);
+            qDebug() << "Row " << currRow << "/" << m_ui->listWidget->count();
+            if (currRow < m_ui->listWidget->count() - 1) {
+                currRow++;
+                deviceItem = m_ui->listWidget->item(currRow);
+                m_ui->listWidget->setCurrentItem(deviceItem);
+            }
+        } else {
+            focusNextChild();
+        }
+      } break;
+      case INPUT_KEY_MINUS_PC:
+      case INPUT_KEY_MINUS_MD:
+      case Qt::Key_Down: {
+          if (m_ui->listWidget->hasFocus()) {
+            deviceItem = m_ui->listWidget->currentItem();
+            currRow = m_ui->listWidget->row(deviceItem);
+            qDebug() << "Row " << currRow << "/" << m_ui->listWidget->count();
+            if (currRow > 0) {
+                currRow--;
+                deviceItem = m_ui->listWidget->item(currRow);
+                m_ui->listWidget->setCurrentItem(deviceItem);
+            }
+          } else {
+              focusPreviousChild();
+          }
+      } break;
+      case INPUT_KEY_BACK_MD:
+      case Qt::Key_Backspace: {
+          if (m_ui->listWidget->hasFocus()) {
+            focusNextChild();
+          }
+      } break;
+      default:
+          break;
+  }
 }
