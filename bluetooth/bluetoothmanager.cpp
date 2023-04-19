@@ -44,10 +44,13 @@ BluetoothManager::BluetoothManager(QWidget* parent)
     connect(localDevice, SIGNAL(deviceDisconnected(const QBluetoothAddress &)), this, SLOT(onDeviceDisconnected(const QBluetoothAddress &)));
     connect(localDevice, SIGNAL(pairingFinished(QBluetoothAddress,QBluetoothLocalDevice::Pairing)), this, SLOT(pairingDone(QBluetoothAddress,QBluetoothLocalDevice::Pairing)));
     connect(localDevice, SIGNAL(pairingDisplayConfirmation(const QBluetoothAddress&, QString)), this, SLOT(pairingConfirm(const QBluetoothAddress&, QString)));
+
+    grabKeyboard();
 }
 
 BluetoothManager::~BluetoothManager()
 {
+    releaseKeyboard();
     delete discoveryAgent;
 }
 
@@ -285,9 +288,9 @@ void BluetoothManager::keyPressEvent(QKeyEvent *event)
   qDebug() << "Key pressed: " << event->key();
 
   // Debug
-  QString debugMsg("Last Key pressed %X");
+  /* QString debugMsg("Last Key pressed %1");
   debugMsg = debugMsg.arg(event->key());
-  m_ui->infoLabel->setText(debugMsg);
+  m_ui->infoLabel->setText(debugMsg); */
 
   int currRow = 0;
   QListWidgetItem* deviceItem = NULL;
