@@ -319,6 +319,21 @@ void BluetoothManager::keyPressEvent(QKeyEvent *event)
               focusPreviousChild();
           }
       } break;
+      case INPUT_KEY_ENTER_MD: {
+          if (m_ui->listWidget->hasFocus()) {
+            deviceItem = m_ui->listWidget->currentItem();
+            bluetoothDeviceSelected(deviceItem);
+          } else {
+            QWidget* currentFocusWidget = focusWidget();
+            QPushButton* button = qobject_cast<QPushButton*>(currentFocusWidget);
+            if (button != NULL) {
+                // Push button
+                button->click();
+            } else {
+                close();
+            }
+          }
+        } break;
       case INPUT_KEY_BACK_MD:
       case Qt::Key_Backspace: {
           if (m_ui->listWidget->hasFocus()) {
