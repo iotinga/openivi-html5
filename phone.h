@@ -56,6 +56,8 @@ public:
     void ClearCurrentModem();
     /** Update current modem when one is connected/disconnected. */
     void UpdateCurrentModem();
+    /** Update phone data file. */
+    void UpdatePhoneDataFile();
 
     void setLastKey(uint keyValue);
     uint getLastKey();
@@ -66,6 +68,7 @@ signals:
     void key_pressed(uint key_input);
 //     void key_pressed();
     void open_bluetooth_manager();
+    void save_phone_file(const QString& content);
 
 public slots:
     void OnCall(const QString& phoneNumber);

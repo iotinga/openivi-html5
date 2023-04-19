@@ -3,5 +3,6 @@
         <file>arrow.png</file>
         <file>welcome.html</file>
         <file>speeds.txt</file>
+        <file>bluetooth.css</file>
     </qresource>
 </RCC>

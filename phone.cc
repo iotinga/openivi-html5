@@ -199,6 +199,7 @@ void Phone::OnModemAdded(const QDBusObjectPath &path, const QVariantMap &propert
 	}
 
 	UpdateCurrentModem();
+	UpdatePhoneDataFile();
 }
 
 void Phone::OnModemRemoved(const QDBusObjectPath &path)
@@ -219,6 +220,7 @@ void Phone::OnModemRemoved(const QDBusObjectPath &path)
 	}
 
 	UpdateCurrentModem();
+	UpdatePhoneDataFile();
 }
 
 void Phone::OnCall(const QString& phoneNumber)
@@ -393,4 +395,34 @@ void Phone::UpdateCurrentModem()
 		m_volume = 0;
 		refresh_phone_info();
 	}
+}
+
+void Phone::UpdatePhoneDataFile()
+{
+	QString fileContent("var phoneLib =[");
+	QString modemString("{name:\"%1\",mac:\"%2\",file:\"phone1.js\"},");
+	QString modemName;
+	QString modemMac;
+	QString modemPath;
+	int mm = -1, devIdx = -1;
+
+		// Previous current is not online, or there were no online modems
+	for (mm = 0; mm < modems.size(); mm++) {
+		OfonoModem modem = modems.value(mm);
+		modemPath = modem.objectPath.path();
+		devIdx = modemPath.indexOf("dev_");
+		if (devIdx != -1) {
+			modemMac = modemPath.mid(devIdx + 4);
+			modemMac.replace('_', ':');
+		}
+		QMap<QString, QVariant>::const_iterator modemNameIter = modem.properties.find("Name");
+		if (modemNameIter != modem.properties.end()) {
+			modemName = modemNameIter.value().toString();
+		}
+		fileContent.append(modemString.arg(modemName).arg(modemMac));
+	}
+
+	fileContent.append("]");
+
+	save_phone_file(fileContent);
 }

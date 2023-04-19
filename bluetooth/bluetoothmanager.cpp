@@ -16,8 +16,8 @@
 #define INPUT_KEY_MINUS_PC  0x01000012
 #define INPUT_KEY_ENTER_PC  0x01000004
 #define INPUT_KEY_BACK_PC   0x01000003
-#define INPUT_KEY_PLUS_MD   0x72
-#define INPUT_KEY_MINUS_MD  0x71
+#define INPUT_KEY_PLUS_MD   0x71
+#define INPUT_KEY_MINUS_MD  0x72
 #define INPUT_KEY_ENTER_MD  0x24
 #define INPUT_KEY_BACK_MD   0x16
 
@@ -25,6 +25,13 @@ BluetoothManager::BluetoothManager(QWidget* parent)
     : QDialog(parent), localDevice(new QBluetoothLocalDevice), m_ui(new Ui::BluetoothManager)
 {
     m_ui->setupUi(this);
+
+    // Apply stylesheet from resources
+    QFile file(":/help/bluetooth.css");
+    file.open(QFile::ReadOnly);
+    QString styleSheet = QLatin1String(file.readAll());
+    setStyleSheet(styleSheet);
+    file.close();
 
     // When starting, always power on local device if necessary
     if (localDevice->hostMode() == QBluetoothLocalDevice::HostPoweredOff) {
@@ -35,6 +42,7 @@ BluetoothManager::BluetoothManager(QWidget* parent)
     connect(m_ui->scanButton, SIGNAL(clicked()), this, SLOT(startScan()));
     connect(m_ui->pairButton, SIGNAL(clicked()), this, SLOT(pairDevice()));
     connect(m_ui->unpairButton, SIGNAL(clicked()), this, SLOT(unpairDevice()));
+    connect(m_ui->closeButton, SIGNAL(clicked()), this, SLOT(close()));
     connect(discoveryAgent, SIGNAL(deviceDiscovered(QBluetoothDeviceInfo)),
             this, SLOT(addDevice(QBluetoothDeviceInfo)));
     connect(discoveryAgent, SIGNAL(finished()), this, SLOT(scanFinished()));
@@ -307,6 +315,8 @@ void BluetoothManager::keyPressEvent(QKeyEvent *event)
                 currRow++;
                 deviceItem = m_ui->listWidget->item(currRow);
                 m_ui->listWidget->setCurrentItem(deviceItem);
+            } else {
+                focusNextChild();
             }
         } else {
             focusNextChild();
@@ -323,6 +333,8 @@ void BluetoothManager::keyPressEvent(QKeyEvent *event)
                 currRow--;
                 deviceItem = m_ui->listWidget->item(currRow);
                 m_ui->listWidget->setCurrentItem(deviceItem);
+            } else {
+                focusPreviousChild();
             }
           } else {
               focusPreviousChild();

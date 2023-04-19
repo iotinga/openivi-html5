@@ -63,6 +63,7 @@ class WebGraphicView : public QGraphicsView {
  private slots:
   void AddJavascriptObjectsToWindow();
   void keyPressEvent(QKeyEvent *event);
+  void onSavePhoneFile(const QString& content);
 
  private:
   AllowLocationWebPage *page_;

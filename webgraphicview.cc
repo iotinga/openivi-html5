@@ -62,6 +62,7 @@ WebGraphicView::WebGraphicView(QWidget *parent)
   connect(page_, SIGNAL(microFocusChanged()), this, SLOT(FocusUpdate()));
 #endif
   connect(phone_, SIGNAL(open_bluetooth_manager()), this, SLOT(OnOpenBluetoothManager()));
+  connect(phone_, SIGNAL(save_phone_file(const QString&)), this, SLOT(onSavePhoneFile(const QString&)));
 }
 
 WebGraphicView::~WebGraphicView() {
@@ -132,5 +133,21 @@ void WebGraphicView::OnOpenBluetoothManager()
   open_bluetooth_manager();
 }
 
+void WebGraphicView::onSavePhoneFile(const QString& content)
+{
+  QUrl viewUrl = view_->url();
+
+  if (viewUrl.isLocalFile()) {
+    QString phoneIndexName = viewUrl.path();
+    phoneIndexName.replace("index.html", "phoneIndex.js");
+    QFile file(phoneIndexName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        return;
+    }
+    QTextStream out(&file);
+    out << content;
+    file.close();
+  }
+}
 
 /* vim: set expandtab tabstop=2 shiftwidth=2: */
