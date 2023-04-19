@@ -288,9 +288,9 @@ void BluetoothManager::keyPressEvent(QKeyEvent *event)
   qDebug() << "Key pressed: " << event->key();
 
   // Debug
-  /* QString debugMsg("Last Key pressed %1");
+  QString debugMsg("Last Key pressed %1");
   debugMsg = debugMsg.arg(event->key());
-  m_ui->infoLabel->setText(debugMsg); */
+  m_ui->infoLabel->setText(debugMsg);
 
   int currRow = 0;
   QListWidgetItem* deviceItem = NULL;
