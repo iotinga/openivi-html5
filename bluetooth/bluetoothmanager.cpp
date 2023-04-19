@@ -283,6 +283,12 @@ void BluetoothManager::onDeviceDisconnected(const QBluetoothAddress& address)
 void BluetoothManager::keyPressEvent(QKeyEvent *event)
 {
   qDebug() << "Key pressed: " << event->key();
+
+  // Debug
+  QString debugMsg("Last Key pressed %X");
+  debugMsg = debugMsg.arg(event->key());
+  m_ui->infoLabel->setText(debugMsg);
+
   int currRow = 0;
   QListWidgetItem* deviceItem = NULL;
 
