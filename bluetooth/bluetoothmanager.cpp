@@ -296,9 +296,9 @@ void BluetoothManager::keyPressEvent(QKeyEvent *event)
   QListWidgetItem* deviceItem = NULL;
 
   switch (event->key()) {
-      case INPUT_KEY_PLUS_PC:
-      case INPUT_KEY_PLUS_MD:
-      case Qt::Key_Up: {
+      case INPUT_KEY_MINUS_PC:
+      case INPUT_KEY_MINUS_MD:
+      case Qt::Key_Down: {
         if (m_ui->listWidget->hasFocus()) {
             deviceItem = m_ui->listWidget->currentItem();
             currRow = m_ui->listWidget->row(deviceItem);
@@ -312,9 +312,9 @@ void BluetoothManager::keyPressEvent(QKeyEvent *event)
             focusNextChild();
         }
       } break;
-      case INPUT_KEY_MINUS_PC:
-      case INPUT_KEY_MINUS_MD:
-      case Qt::Key_Down: {
+      case INPUT_KEY_PLUS_PC:
+      case INPUT_KEY_PLUS_MD:
+      case Qt::Key_Up: {
           if (m_ui->listWidget->hasFocus()) {
             deviceItem = m_ui->listWidget->currentItem();
             currRow = m_ui->listWidget->row(deviceItem);
@@ -328,10 +328,13 @@ void BluetoothManager::keyPressEvent(QKeyEvent *event)
               focusPreviousChild();
           }
       } break;
-      case INPUT_KEY_ENTER_MD: {
+      case INPUT_KEY_ENTER_MD:
+      case Qt::Key_Return: {
           if (m_ui->listWidget->hasFocus()) {
             deviceItem = m_ui->listWidget->currentItem();
-            bluetoothDeviceSelected(deviceItem);
+            if (deviceItem != NULL) {
+                bluetoothDeviceSelected(deviceItem);
+            }
           } else {
             QWidget* currentFocusWidget = focusWidget();
             QPushButton* button = qobject_cast<QPushButton*>(currentFocusWidget);
