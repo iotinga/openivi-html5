@@ -9,6 +9,7 @@
 
 #include "bluez_deviceinterface.h"
 
+#define BLUEZ_BASE_OBJECT_PATH "/org/bluez/"
 #define LOCAL_INTERFACE_DEVICE_NAME "hci0"
 
 // Map key presses to input events in interface
@@ -180,7 +181,7 @@ QBluetoothAddress BluetoothManager::getDeviceAddress(QString displayString)
 void BluetoothManager::pairDevice()
 {
     OrgBluezDevice1Interface* bluezDeviceInterface = NULL;
-    QString deviceObjectPath = "/org/bluez/";
+    QString deviceObjectPath = BLUEZ_BASE_OBJECT_PATH;
 
     if (selectedDeviceName.isEmpty() || selectedDeviceAddress.isNull()) {
         // Invalid selection, return
@@ -189,7 +190,7 @@ void BluetoothManager::pairDevice()
 
     if (localDevice->pairingStatus(selectedDeviceAddress) == QBluetoothLocalDevice::Unpaired) {
         // Using AuthorizedPaired automatically trusts device
-        // after pairing
+        // after pairing (seems to depend on BlueZ or Qt version)
         // localDevice->requestPairing(selectedDeviceAddress, QBluetoothLocalDevice::Paired);
         localDevice->requestPairing(selectedDeviceAddress, QBluetoothLocalDevice::AuthorizedPaired);
     } else {
@@ -238,6 +239,9 @@ void BluetoothManager::pairingConfirm(const QBluetoothAddress& address, QString 
 
 void BluetoothManager::pairingDone(const QBluetoothAddress& address, QBluetoothLocalDevice::Pairing pairing)
 {
+    OrgBluezDevice1Interface* bluezDeviceInterface = NULL;
+    QString deviceObjectPath = BLUEZ_BASE_OBJECT_PATH;
+
     QList<QListWidgetItem *> items = m_ui->listWidget->findItems(address.toString(), Qt::MatchContains);
 
     QColor devPairColor;
@@ -260,6 +264,17 @@ void BluetoothManager::pairingDone(const QBluetoothAddress& address, QBluetoothL
             bluetoothDeviceSelected(items.at(var));
         }
     }
+
+    // Set the device as trusted
+    deviceObjectPath.append(LOCAL_INTERFACE_DEVICE_NAME);
+    deviceObjectPath.append("/dev_");
+    deviceObjectPath.append(address.toString().replace(":", "_"));
+    bluezDeviceInterface = new OrgBluezDevice1Interface("org.bluez", deviceObjectPath, QDBusConnection::systemBus());
+    if (!bluezDeviceInterface->trusted()) {
+        bluezDeviceInterface->setTrusted(true);
+    }
+    delete bluezDeviceInterface;
+
 }
 
 
