@@ -188,7 +188,10 @@ void BluetoothManager::pairDevice()
     }
 
     if (localDevice->pairingStatus(selectedDeviceAddress) == QBluetoothLocalDevice::Unpaired) {
-        localDevice->requestPairing(selectedDeviceAddress, QBluetoothLocalDevice::Paired);
+        // Using AuthorizedPaired automatically trusts device
+        // after pairing
+        // localDevice->requestPairing(selectedDeviceAddress, QBluetoothLocalDevice::Paired);
+        localDevice->requestPairing(selectedDeviceAddress, QBluetoothLocalDevice::AuthorizedPaired);
     } else {
         deviceObjectPath.append(LOCAL_INTERFACE_DEVICE_NAME);
         deviceObjectPath.append("/dev_");
