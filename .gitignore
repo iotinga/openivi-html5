@@ -3,3 +3,5 @@ openivi-html5.kdev4
 tags
 build/
 resources/can_config_*.json
+bluetooth/bluez_device_fmt.xml
+bluetooth/bluez_device_raw.xml
