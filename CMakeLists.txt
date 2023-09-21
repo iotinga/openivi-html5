@@ -30,7 +30,6 @@ find_package(X11)
 
 find_program(CTAGS NAMES ctags)
 
-qt5_wrap_ui(UI_MAINWINDOW mainwindow.ui)
 
 set_source_files_properties(softwareloadingmanager.xml
     PROPERTIES INCLUDE softwareloadingmanagerdbus.h)
@@ -48,20 +47,32 @@ add_subdirectory(ofono)
 # Add subdirectory for bluetooth management (scan, pairing, etc)
 add_subdirectory(bluetooth)
 
-add_executable(openivi-html5
-        main.cc mainwindow.cc webgraphicview.cc softwareloadingmanager.cc
-        car.cc installdetail.cc packageid.cc
-        virtualkeyboard.cc allowlocation_webpage.cc phone.cc
-        ${DBUS_FILES} ${RCC_FILES} ${UI_MAINWINDOW})
+qt5_wrap_ui(UI_MAINWINDOW_L5 mainwindow_l5.ui)
+qt5_wrap_ui(UI_MAINWINDOW_P5 mainwindow_p5.ui)
+qt5_wrap_ui(UI_MAINWINDOW_L6 mainwindow_l6.ui)
+qt5_wrap_ui(UI_MAINWINDOW_P6 mainwindow_p6.ui)
 
-set_property(TARGET openivi-html5 PROPERTY CXX_STANDARD 11)
+foreach(LAYOUT L5 P5 L6 P6)
+  string(TOLOWER ${LAYOUT} LAYTAG)
+  set(UI_MAIN ${UI_MAINWINDOW_${LAYOUT}})
+  message("UI variable = ${UI_MAIN}")
 
-if (X11_FOUND)
-  target_link_libraries(openivi-html5 canreader ofono-dash bt_manager ${X11_LIBRARIES} Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets Qt5::Bluetooth)
-  include_directories(${X11_INCLUDE_DIR})
-else(X11_FOUND)
-  target_link_libraries(openivi-html5 canreader ofono-dash bt_manager Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets Qt5::Bluetooth)
-endif(X11_FOUND)
+  add_executable(openivi-${LAYTAG}
+          main.cc mainwindow.cc webgraphicview.cc softwareloadingmanager.cc
+          car.cc installdetail.cc packageid.cc
+          virtualkeyboard.cc allowlocation_webpage.cc phone.cc
+          ${DBUS_FILES} ${RCC_FILES}
+          ${UI_MAIN})
+  set_target_properties(openivi-${LAYTAG} PROPERTIES COMPILE_FLAGS "-DDASH_LAYOUT_${LAYOUT}=1")
+  set_property(TARGET openivi-${LAYTAG} PROPERTY CXX_STANDARD 11)
+
+  if (X11_FOUND)
+    target_link_libraries(openivi-${LAYTAG} canreader ofono-dash bt_manager ${X11_LIBRARIES} Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets Qt5::Bluetooth)
+    include_directories(${X11_INCLUDE_DIR})
+  else(X11_FOUND)
+    target_link_libraries(openivi-${LAYTAG} canreader ofono-dash bt_manager Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets Qt5::Bluetooth)
+  endif(X11_FOUND)
+endforeach(LAYOUT)
 
 # qt5_use_modules(openivi-html5 Widgets DBus WebKitWidgets)
 
@@ -70,13 +81,13 @@ message("Build type is ${CMAKE_BUILD_TYPE}")
 # Export compile_commands.json for clang-check
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-if (CTAGS)
-    # Generate tags if the 'ctags' tool is available
-    set_source_files_properties(tags PROPERTIES GENERATED true)
-    add_custom_target(tags
-        COMMAND ${CTAGS} -R --c++-kinds=+p --fields=+iaS --extra=+q .
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-    add_dependencies(openivi-html5 tags)
-endif() # CTAGS
+#if (CTAGS)
+    ## Generate tags if the 'ctags' tool is available
+    #set_source_files_properties(tags PROPERTIES GENERATED true)
+    #add_custom_target(tags
+        #COMMAND ${CTAGS} -R --c++-kinds=+p --fields=+iaS --extra=+q .
+        #WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+    #add_dependencies(openivi-html5 tags)
+#endif() # CTAGS
 
 # vim: set tabstop=4 shiftwidth=4 expandtab:
