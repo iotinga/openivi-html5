@@ -67,10 +67,10 @@ foreach(LAYOUT L5 P5 L6 P6)
   set_property(TARGET openivi-${LAYTAG} PROPERTY CXX_STANDARD 11)
 
   if (X11_FOUND)
-    target_link_libraries(openivi-${LAYTAG} canreader ofono-dash bt_manager ${X11_LIBRARIES} Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets Qt5::Bluetooth)
+    target_link_libraries(openivi-${LAYTAG} canreader ofono-dash bt_manager_${LAYTAG} ${X11_LIBRARIES} Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets Qt5::Bluetooth)
     include_directories(${X11_INCLUDE_DIR})
   else(X11_FOUND)
-    target_link_libraries(openivi-${LAYTAG} canreader ofono-dash bt_manager Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets Qt5::Bluetooth)
+    target_link_libraries(openivi-${LAYTAG} canreader ofono-dash bt_manager_${LAYTAG} Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets Qt5::Bluetooth)
   endif(X11_FOUND)
 endforeach(LAYOUT)
 
