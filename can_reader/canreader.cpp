@@ -104,6 +104,8 @@ void CanReader::run()
                 } else {
                     if (cRet != CRET_NOTHING_TO_READ) {
                         usleep(100000);
+                    } else {
+                        usleep(1000);
                     }
                 }
             }
