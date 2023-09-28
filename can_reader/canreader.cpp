@@ -66,6 +66,24 @@ void CanReader::run()
     CommRetCode cRet = CRET_ERROR;
     struct canfd_frame canFrame;
     memset(&canFrame, 0x00, sizeof(struct canfd_frame));
+    canid_t rpmID = 0x00000000;
+    canid_t speedID = 0x00000000;
+    canid_t vbatID = 0x00000000;
+    canid_t gearID = 0x00000000;
+
+    if (canData->rpm_ch) {
+        rpmID = canData->rpm_ch->GetCAN_ID();
+    }
+    if (canData->speed_ch) {
+        speedID = canData->speed_ch->GetCAN_ID();
+    }
+    if (canData->vbat_ch) {
+        vbatID = canData->vbat_ch->GetCAN_ID();
+    }
+    if (canData->gear_ch) {
+        gearID = canData->gear_ch->GetCAN_ID();
+    }
+
     /* Open CAN interface */
     if (canBus != NULL) {
         cRet = canBus->Open(canBusName.c_str(), &portSetup);
@@ -81,22 +99,22 @@ void CanReader::run()
                 if (cRet == CRET_OK) {
                     dataMutex->lock();
                     if (canData->rpm_ch) {
-                        if (canFrame.can_id == canData->rpm_ch->GetCAN_ID()) {
+                        if (canFrame.can_id == rpmID) {
                             canData->rpm_raw = canData->rpm_ch->GetValueFromCANFrame(&canFrame, portSetup.endianess);
                         }
                     }
                     if (canData->speed_ch) {
-                        if (canFrame.can_id == canData->speed_ch->GetCAN_ID()) {
+                        if (canFrame.can_id == speedID) {
                             canData->speed_raw = canData->speed_ch->GetValueFromCANFrame(&canFrame, portSetup.endianess);
                         }
                     }
                     if (canData->vbat_ch) {
-                        if (canFrame.can_id == canData->vbat_ch->GetCAN_ID()) {
+                        if (canFrame.can_id == vbatID) {
                             canData->vbat_raw = canData->vbat_ch->GetValueFromCANFrame(&canFrame, portSetup.endianess);
                         }
                     }
                     if (canData->gear_ch) {
-                        if (canFrame.can_id == canData->gear_ch->GetCAN_ID()) {
+                        if (canFrame.can_id == gearID) {
                             canData->gear_raw = canData->gear_ch->GetValueFromCANFrame(&canFrame, portSetup.endianess);
                         }
                     }
