@@ -33,6 +33,7 @@
 #include "softwareloadingmanager.h"
 #include "car.h"
 #include "phone.h"
+#include "scriptrunner.h"
 #ifdef USE_VIRTUAL_KEYBOARD
 #include "virtualkeyboard.h"
 #endif
@@ -52,6 +53,7 @@ class WebGraphicView : public QGraphicsView {
 
   void AddSettings(const QString& settingFilePath);
   void SetInputMode(DataInputMode inputMode);
+  void SetScriptPath(const QString& runScriptPath);
 
  signals:
    void open_bluetooth_manager();
@@ -79,6 +81,7 @@ class WebGraphicView : public QGraphicsView {
 #endif
   Car *car_;
   Phone *phone_;
+  ScriptRunner *script_;
 };
 
 /* vim: set expandtab tabstop=2 shiftwidth=2: */

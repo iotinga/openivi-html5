@@ -62,14 +62,18 @@ MainWindow::MainWindow(QWidget *parent, const QUrl &force_url, DataInputMode inp
   // Select input source for cluster data
   ui_->graphicsView->SetInputMode(inputMode);
 
+  QSettings settings;
   if (force_url.isEmpty()) {
-    QSettings settings;
     QUrl startingUrl =
         settings.value("homepage", "qrc:/help/welcome.html").toUrl();
     SetUrl(startingUrl);
   } else {
     SetUrl(force_url);
   }
+
+  QString scriptPath = settings.value("script", "").toString();
+  qDebug() << "Script path: " << scriptPath;
+  ui_->graphicsView->SetScriptPath(scriptPath);
 }
 
 MainWindow::~MainWindow() { delete ui_; }

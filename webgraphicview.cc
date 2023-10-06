@@ -38,7 +38,9 @@ WebGraphicView::WebGraphicView(QWidget *parent)
 #endif
       softwareLoadingManager_(new SoftwareLoadingManager(this)),
       car_(new Car(this)),
-      phone_(new Phone(this)) {
+      phone_(new Phone(this)),
+      script_(new ScriptRunner(this))
+      {
 #ifdef _ADVANCED_DEBUG
   page_->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
   page_->settings()->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls, true);
@@ -108,6 +110,7 @@ void WebGraphicView::AddJavascriptObjectsToWindow() {
 
   page_->currentFrame()->addToJavaScriptWindowObject("car", car_);
   page_->currentFrame()->addToJavaScriptWindowObject("phone", phone_);
+  page_->currentFrame()->addToJavaScriptWindowObject("script", script_);
 }
 
 void WebGraphicView::AddSettings(const QString& settingFilePath)
@@ -148,6 +151,11 @@ void WebGraphicView::onSavePhoneFile(const QString& content)
     out << content;
     file.close();
   }
+}
+
+void WebGraphicView::SetScriptPath(const QString& runScriptPath)
+{
+  script_->SetScriptPath(runScriptPath);
 }
 
 /* vim: set expandtab tabstop=2 shiftwidth=2: */

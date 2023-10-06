@@ -60,7 +60,7 @@ foreach(LAYOUT L5 P5 L6 P6)
   add_executable(openivi-${LAYTAG}
           main.cc mainwindow.cc webgraphicview.cc softwareloadingmanager.cc
           car.cc installdetail.cc packageid.cc
-          virtualkeyboard.cc allowlocation_webpage.cc phone.cc
+          virtualkeyboard.cc allowlocation_webpage.cc phone.cc scriptrunner.cpp
           ${DBUS_FILES} ${RCC_FILES}
           ${UI_MAIN})
   set_target_properties(openivi-${LAYTAG} PROPERTIES COMPILE_FLAGS "-DDASH_LAYOUT_${LAYOUT}=1")

@@ -1,5 +1,5 @@
-// <one line to give the program's name and a brief idea of what it does.>
-// SPDX-FileCopyrightText: 2023 <copyright holder> <email>
+// Manage Ofono interface via D-Bus to make phone calls.
+// SPDX-FileCopyrightText: 2023 Davide Rondini <info@drondini.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifndef PHONE_H
