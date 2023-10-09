@@ -78,7 +78,16 @@ MainWindow::MainWindow(QWidget *parent, const QUrl &force_url, DataInputMode inp
 
 MainWindow::~MainWindow() { delete ui_; }
 
-void MainWindow::SetUrl(const QUrl &url) { ui_->graphicsView->SetUrl(url); }
+void MainWindow::SetUrl(const QUrl &url) {
+  ui_->graphicsView->SetUrl(url);
+}
+
+void MainWindow::SetScriptPath(const QString& scriptPath)
+{
+  qDebug() << "Script path: " << scriptPath;
+  ui_->graphicsView->SetScriptPath(scriptPath);
+}
+
 
 void MainWindow::OpenUrlDialog() {
   QUrl s = QFileDialog::getOpenFileUrl(this, "Choose a URL to open");

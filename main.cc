@@ -32,6 +32,7 @@ int main(int argc, char *argv[]) {
   QApplication::setOrganizationName("OpenIVI");
   QApplication::setApplicationName("openivi");
   DataInputMode inputMode = DATA_INPUT_FILE;
+  QString runScriptPath;
 
   QCommandLineParser parser;
   parser.setApplicationDescription("OpenIVI Mobility HTML5 environment");
@@ -63,6 +64,11 @@ int main(int argc, char *argv[]) {
                                 qtr("Read data from CAN bus"), "settings");
   parser.addOption(settingFile);
 
+  QCommandLineOption scriptFile(QStringList() << "r"
+                                              << "run",
+                                qtr("Run script path"), "run");
+  parser.addOption(scriptFile);
+
   parser.process(a);
 
   if (parser.isSet(clearSettings)) {
@@ -92,6 +98,10 @@ int main(int argc, char *argv[]) {
     a.setOverrideCursor(Qt::BlankCursor);
   }
 
+  if (parser.isSet(scriptFile)) {
+    runScriptPath = parser.value(scriptFile);
+    w.SetScriptPath(runScriptPath);
+  }
 
   return a.exec();
 }

@@ -38,6 +38,7 @@ class MainWindow : public QMainWindow {
   ~MainWindow();
 
   void SetUrl(const QUrl &url);
+  void SetScriptPath(const QString& scriptPath);
   // Overriden from QMainWindow
   void keyPressEvent(QKeyEvent *event);
 
