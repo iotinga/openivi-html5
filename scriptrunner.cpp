@@ -31,7 +31,7 @@ void ScriptRunner::OnRun(const QString& runParameter)
 	if (scriptPath.size() > 0) {
 		qDebug() << "Running script " << scriptPath << " with parameter " << runParameter;
 
-    // arguments << runParameter;
+    arguments << runParameter;
 
     scriptProcess = new QProcess(parent());
 		QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
