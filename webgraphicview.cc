@@ -126,7 +126,9 @@ void WebGraphicView::SetInputMode(DataInputMode inputMode)
 
 void WebGraphicView::keyPressEvent(QKeyEvent *event)
 {
+#ifdef ENABLE_ADVANCED_DEBUG
   qDebug() << "Key pressed: " << event->key();
+#endif
   phone_->setLastKey(event->key());
   phone_->key_pressed(event->key());
 }
