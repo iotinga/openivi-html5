@@ -102,10 +102,10 @@ void MainWindow::ToggleFullScreen() {
   bool shownhide;
   if (isFullScreen()) {
     setWindowState(Qt::WindowNoState);
-    shownhide = true;
+    shownhide = false;
   } else {
     setWindowState(Qt::WindowFullScreen);
-    shownhide = false;
+    shownhide = true;
   }
   if (shownhide) {
     ui_->menuBar_->show();
