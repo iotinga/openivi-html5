@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>480</width>
-    <height>800</height>
+    <width>272</width>
+    <height>480</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -40,8 +40,8 @@
      <widget class="WebGraphicView" name="graphicsView">
       <property name="minimumSize">
        <size>
-        <width>300</width>
-        <height>300</height>
+        <width>200</width>
+        <height>200</height>
        </size>
       </property>
       <property name="frameShape">
@@ -65,7 +65,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>480</width>
+     <width>272</width>
      <height>30</height>
     </rect>
    </property>
