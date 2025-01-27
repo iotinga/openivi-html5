@@ -28,8 +28,6 @@ find_package(Qt5DBus REQUIRED)
 find_package(Qt5Bluetooth REQUIRED)
 find_package(X11)
 
-find_program(CTAGS NAMES ctags)
-
 
 set_source_files_properties(softwareloadingmanager.xml
     PROPERTIES INCLUDE softwareloadingmanagerdbus.h)
@@ -68,20 +66,8 @@ else(X11_FOUND)
 endif(X11_FOUND)
 
 
-# qt5_use_modules(openivi-html5 Widgets DBus WebKitWidgets)
-
 message("Build type is ${CMAKE_BUILD_TYPE}")
 
 # Export compile_commands.json for clang-check
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-#if (CTAGS)
-    ## Generate tags if the 'ctags' tool is available
-    #set_source_files_properties(tags PROPERTIES GENERATED true)
-    #add_custom_target(tags
-        #COMMAND ${CTAGS} -R --c++-kinds=+p --fields=+iaS --extra=+q .
-        #WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-    #add_dependencies(openivi-html5 tags)
-#endif() # CTAGS
-
-# vim: set tabstop=4 shiftwidth=4 expandtab:

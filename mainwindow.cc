@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent, const QUrl &force_url, DataInputMode inp
   QSettings settings;
   if (force_url.isEmpty()) {
     QUrl startingUrl =
-        settings.value("homepage", "qrc:/help/welcome.html").toUrl();
+        settings.value("homepage", "qrc:/home/index.html").toUrl();
     SetUrl(startingUrl);
   } else {
     SetUrl(force_url);
@@ -88,20 +88,10 @@ void MainWindow::OpenUrlDialog() {
 }
 
 void MainWindow::ToggleFullScreen() {
-  bool shownhide;
   if (isFullScreen()) {
     setWindowState(Qt::WindowNoState);
-    shownhide = false;
   } else {
     setWindowState(Qt::WindowFullScreen);
-    shownhide = true;
-  }
-  if (shownhide) {
-    ui_->menuBar_->show();
-    ui_->statusBar_->show();
-  } else {
-    ui_->menuBar_->hide();
-    ui_->statusBar_->hide();
   }
 }
 

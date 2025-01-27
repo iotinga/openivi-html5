@@ -60,34 +60,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menuBar_">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>272</width>
-     <height>30</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menu_File">
-    <property name="title">
-     <string>&amp;File</string>
-    </property>
-    <addaction name="actionOpen_URL"/>
-    <addaction name="actionBluetooth"/>
-    <addaction name="separator"/>
-    <addaction name="action_Quit"/>
-   </widget>
-   <widget class="QMenu" name="menu_Window">
-    <property name="title">
-     <string>&amp;Window</string>
-    </property>
-    <addaction name="action_Full_Screen"/>
-   </widget>
-   <addaction name="menu_File"/>
-   <addaction name="menu_Window"/>
-  </widget>
-  <widget class="QStatusBar" name="statusBar_"/>
   <action name="action_Quit">
    <property name="text">
     <string>&amp;Quit</string>

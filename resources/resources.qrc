@@ -1,8 +1,8 @@
 <RCC>
-    <qresource prefix="/help">
-        <file>arrow.png</file>
-        <file>welcome.html</file>
-        <file>speeds.txt</file>
-        <file>bluetooth.css</file>
+    <qresource>
+        <file>help/arrow.png</file>
+        <file>help/welcome.html</file>
+        <file>help/speeds.txt</file>
+        <file>help/bluetooth.css</file>
     </qresource>
 </RCC>

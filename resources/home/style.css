@@ -1,0 +1,120 @@
+@font-face {
+    font-family: 'Calibri';
+    src: url(assets/fonts/calibri-bold.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: 'SF';
+    font-weight: bold;
+    src: url(assets/fonts/sf-bold.otf);
+}
+
+@font-face {
+    font-family: 'SF';
+    font-weight: normal;
+    src: url(assets/fonts/sf-regular.otf);
+}
+
+* {
+    display: flex;
+    flex-direction: column;
+    color: rgb(219, 219, 219);
+    font-family: 'SF';
+    text-transform: uppercase;
+}
+
+body {
+    background-color: rgb(36, 32, 30);
+}
+
+button {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    background-color: rgb(61, 61, 62);
+    font-weight: bold;
+    color: rgb(219, 219, 219);
+    width: 100%;
+    height: 58px;
+
+    border: none;
+    outline: none;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    border-width: 2px;
+    border-color: transparent;
+    border-style: inset;
+}
+
+button:focus {
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+    border-color: rgb(255, 255, 255);
+}
+
+button img {
+    width: 42px;
+    height: 42px;
+    margin-right: 8px;
+}
+
+button span {
+    font-size: 24px;
+}
+
+h1 {
+    color: rgb(219, 219, 219);
+    text-transform: uppercase;
+    font-family: 'Calibri';
+}
+
+#home-heading {
+    flex-direction: row;
+    justify-content: space-between;
+    height: 100px;
+}
+
+.info-box {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-style: inset;
+    border-width: 2px;
+    border-color: rgb(219, 219, 219);
+    border-radius: 8px;
+    padding: 0.5rem;
+}
+
+#phone-details-container {
+    width: 66%;
+    margin-right: 8px;
+}
+
+#time-container {
+    width: 33%
+}
+
+#time-container span {
+    font-family: 'Calibri';
+    font-size: 52px;
+    line-height: 0.8;
+}
+
+.page-title-container {
+    height: 52px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.page-title-container h1 {
+    font-family: 'Calibri';
+    font-size: 36px;
+    line-height: 0.8;
+}
+
+
+
+
+
+  
