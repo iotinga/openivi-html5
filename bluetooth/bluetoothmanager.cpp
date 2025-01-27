@@ -2,23 +2,12 @@
 // SPDX-FileCopyrightText: 2023 <copyright holder> <email>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "bluetoothmanager.h"
-#ifdef DASH_LAYOUT_L5
-#include "ui_bluetoothmanager_l5.h"
-#endif
-#ifdef DASH_LAYOUT_P5
-#include "ui_bluetoothmanager_p5.h"
-#endif
-#ifdef DASH_LAYOUT_L6
-#include "ui_bluetoothmanager_l6.h"
-#endif
-#ifdef DASH_LAYOUT_P6
-#include "ui_bluetoothmanager_p6.h"
-#endif
+#include "ui_bluetoothmanager.h"
 
 #include <QDebug>
 
 #include "bluez_deviceinterface.h"
+#include "bluetoothmanager.h"
 
 #define BLUEZ_BASE_OBJECT_PATH "/org/bluez/"
 #define LOCAL_INTERFACE_DEVICE_NAME "hci0"

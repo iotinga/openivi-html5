@@ -17,19 +17,8 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include "ui_mainwindow.h"
 #include "mainwindow.h"
-#ifdef DASH_LAYOUT_L5
-#include "ui_mainwindow_l5.h"
-#endif
-#ifdef DASH_LAYOUT_P5
-#include "ui_mainwindow_p5.h"
-#endif
-#ifdef DASH_LAYOUT_L6
-#include "ui_mainwindow_l6.h"
-#endif
-#ifdef DASH_LAYOUT_P6
-#include "ui_mainwindow_p6.h"
-#endif
 #include <QFileDialog>
 #include <QSettings>
 #include <bluetooth/bluetoothmanager.h>

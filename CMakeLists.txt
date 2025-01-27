@@ -47,32 +47,26 @@ add_subdirectory(ofono)
 # Add subdirectory for bluetooth management (scan, pairing, etc)
 add_subdirectory(bluetooth)
 
-qt5_wrap_ui(UI_MAINWINDOW_L5 mainwindow_l5.ui)
-qt5_wrap_ui(UI_MAINWINDOW_P5 mainwindow_p5.ui)
-qt5_wrap_ui(UI_MAINWINDOW_L6 mainwindow_l6.ui)
-qt5_wrap_ui(UI_MAINWINDOW_P6 mainwindow_p6.ui)
+qt5_wrap_ui(UI_MAINWINDOW mainwindow.ui)
 
-foreach(LAYOUT L5 P5 L6 P6)
-  string(TOLOWER ${LAYOUT} LAYTAG)
-  set(UI_MAIN ${UI_MAINWINDOW_${LAYOUT}})
-  message("UI variable = ${UI_MAIN}")
+set(UI_MAIN ${UI_MAINWINDOW})
+message("UI variable = ${UI_MAIN}")
 
-  add_executable(openivi-${LAYTAG}
-          main.cc mainwindow.cc webgraphicview.cc softwareloadingmanager.cc
-          car.cc installdetail.cc packageid.cc
-          virtualkeyboard.cc allowlocation_webpage.cc phone.cc scriptrunner.cpp
-          ${DBUS_FILES} ${RCC_FILES}
-          ${UI_MAIN})
-  set_target_properties(openivi-${LAYTAG} PROPERTIES COMPILE_FLAGS "-DDASH_LAYOUT_${LAYOUT}=1")
-  set_property(TARGET openivi-${LAYTAG} PROPERTY CXX_STANDARD 11)
+add_executable(openivi
+        main.cc mainwindow.cc webgraphicview.cc softwareloadingmanager.cc
+        car.cc installdetail.cc packageid.cc
+        virtualkeyboard.cc allowlocation_webpage.cc phone.cc scriptrunner.cpp
+        ${DBUS_FILES} ${RCC_FILES}
+        ${UI_MAIN})
+set_property(TARGET openivi PROPERTY CXX_STANDARD 11)
 
-  if (X11_FOUND)
-    target_link_libraries(openivi-${LAYTAG} canreader ofono-dash bt_manager_${LAYTAG} ${X11_LIBRARIES} Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets Qt5::Bluetooth)
-    include_directories(${X11_INCLUDE_DIR})
-  else(X11_FOUND)
-    target_link_libraries(openivi-${LAYTAG} canreader ofono-dash bt_manager_${LAYTAG} Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets Qt5::Bluetooth)
-  endif(X11_FOUND)
-endforeach(LAYOUT)
+if (X11_FOUND)
+  target_link_libraries(openivi canreader ofono-dash bt_manager ${X11_LIBRARIES} Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets Qt5::Bluetooth)
+  include_directories(${X11_INCLUDE_DIR})
+else(X11_FOUND)
+  target_link_libraries(openivi canreader ofono-dash bt_manager Qt5::Widgets Qt5::DBus Qt5::WebKitWidgets Qt5::Bluetooth)
+endif(X11_FOUND)
+
 
 # qt5_use_modules(openivi-html5 Widgets DBus WebKitWidgets)
 
