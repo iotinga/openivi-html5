@@ -20,144 +20,144 @@
 #include "webgraphicview.h"
 
 #include <QWebFrame>
-#include <QtDBus/QDBusMessage>
 #include <QtDBus/QDBusConnection>
-#include <QtWebKit/QtWebKit>
+#include <QtDBus/QDBusMessage>
 
 #include "softwareloadingmanager.h"
 
-using org::genivi::software_loading_manager;
-
 WebGraphicView::WebGraphicView(QWidget *parent)
-    : QGraphicsView(parent),
-      page_(new AllowLocationWebPage(this)),
-      view_(new QGraphicsWebView),
+    : QGraphicsView(parent), page_(new AllowLocationWebPage(this)), view_(new QGraphicsWebView),
       scene_(new QGraphicsScene(this)),
 #ifdef _ADVANCED_DEBUG
       webInspector_(new QWebInspector),
 #endif
-      softwareLoadingManager_(new SoftwareLoadingManager(this)),
-      car_(new Car(this)),
-      phone_(new Phone(this)),
+      softwareLoadingManager_(new SoftwareLoadingManager(this)), car_(new Car(this)), phone_(new Phone(this)),
       script_(new ScriptRunner(this))
-      {
-#ifdef _ADVANCED_DEBUG
-  page_->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
-  page_->settings()->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls, true);
-#else
-  page_->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, false);
-  page_->settings()->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls, false);
-  page_->setProperty("_q_webInspectorServerPort", 9221);
-#endif
-  page_->settings()->setAttribute(QWebSettings::LocalStorageEnabled, true);
-  connect(page_->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()), this,
-          SLOT(AddJavascriptObjectsToWindow()));
-  view_->setPage(page_);
-
-  setScene(scene_);
-  scene_->addItem(view_);
-#ifdef _ADVANCED_DEBUG
-  webInspector_->setPage(page_);
-#endif
-
-#ifdef USE_VIRTUAL_KEYBOARD
-  connect(page_, SIGNAL(microFocusChanged()), this, SLOT(FocusUpdate()));
-#endif
-  connect(phone_, SIGNAL(open_bluetooth_manager()), this, SLOT(OnOpenBluetoothManager()));
-  connect(phone_, SIGNAL(save_phone_file(const QString&)), this, SLOT(onSavePhoneFile(const QString&)));
-}
-
-WebGraphicView::~WebGraphicView() {
-  delete view_;
-#ifdef _ADVANCED_DEBUG
-  delete webInspector_;
-#endif
-}
-
-void WebGraphicView::resizeEvent(QResizeEvent *event) {
-  view_->resize(this->size());
-  QGraphicsView::resizeEvent(event);
-}
-
-void WebGraphicView::SetUrl(const QUrl &url) { view_->setUrl(url); }
-
-void WebGraphicView::FocusUpdate() {
-#ifdef USE_VIRTUAL_KEYBOARD
-  QVariant r = page_->inputMethodQuery(Qt::ImSurroundingText);
-  bool shouldDisplayKeyboard = r.isValid();
-  if (keyboardVisible_ != shouldDisplayKeyboard) {
-    if (shouldDisplayKeyboard) {
-      virtualKeyboard_.Show();
-    } else {
-      virtualKeyboard_.Hide();
-    }
-    keyboardVisible_ = shouldDisplayKeyboard;
-  }
-#endif
-}
-
-void WebGraphicView::AddJavascriptObjectsToWindow() {
-  page_->currentFrame()->addToJavaScriptWindowObject("slm",
-                                                     softwareLoadingManager_);
-
-  page_->currentFrame()->evaluateJavaScript("genivi = {slm:slm}");
-
-  page_->currentFrame()->evaluateJavaScript(
-      "navigator.geolocation = {"
-      "  watchPosition: function () {},"
-      "  getCurrentPosition: function () {}"
-      "};");
-
-  page_->currentFrame()->addToJavaScriptWindowObject("car", car_);
-  page_->currentFrame()->addToJavaScriptWindowObject("phone", phone_);
-  page_->currentFrame()->addToJavaScriptWindowObject("script", script_);
-}
-
-void WebGraphicView::AddSettings(const QString& settingFilePath)
 {
-  car_->ParseSettingFile(settingFilePath);
+#ifdef _ADVANCED_DEBUG
+    page_->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
+    page_->settings()->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls, true);
+#else
+    page_->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, false);
+    page_->settings()->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls, false);
+    page_->setProperty("_q_webInspectorServerPort", 9221);
+#endif
+    page_->settings()->setAttribute(QWebSettings::LocalStorageEnabled, true);
+    connect(page_->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(AddJavascriptObjectsToWindow()));
+    view_->setPage(page_);
+
+    setScene(scene_);
+    scene_->addItem(view_);
+#ifdef _ADVANCED_DEBUG
+    webInspector_->setPage(page_);
+#endif
+
+#ifdef USE_VIRTUAL_KEYBOARD
+    connect(page_, SIGNAL(microFocusChanged()), this, SLOT(FocusUpdate()));
+#endif
+    connect(phone_, SIGNAL(open_bluetooth_manager()), this, SLOT(OnOpenBluetoothManager()));
+    connect(phone_, SIGNAL(save_phone_file(const QString &)), this, SLOT(onSavePhoneFile(const QString &)));
 }
 
+WebGraphicView::~WebGraphicView()
+{
+    delete view_;
+#ifdef _ADVANCED_DEBUG
+    delete webInspector_;
+#endif
+}
+
+void WebGraphicView::resizeEvent(QResizeEvent *event)
+{
+    view_->resize(this->size());
+    QGraphicsView::resizeEvent(event);
+}
+
+void WebGraphicView::SetUrl(const QUrl &url)
+{
+    view_->setUrl(url);
+}
+
+void WebGraphicView::FocusUpdate()
+{
+#ifdef USE_VIRTUAL_KEYBOARD
+    QVariant r = page_->inputMethodQuery(Qt::ImSurroundingText);
+    bool shouldDisplayKeyboard = r.isValid();
+    if (keyboardVisible_ != shouldDisplayKeyboard)
+    {
+        if (shouldDisplayKeyboard)
+        {
+            virtualKeyboard_.Show();
+        }
+        else
+        {
+            virtualKeyboard_.Hide();
+        }
+        keyboardVisible_ = shouldDisplayKeyboard;
+    }
+#endif
+}
+
+void WebGraphicView::AddJavascriptObjectsToWindow()
+{
+    page_->currentFrame()->addToJavaScriptWindowObject("slm", softwareLoadingManager_);
+
+    page_->currentFrame()->evaluateJavaScript("genivi = {slm:slm}");
+
+    page_->currentFrame()->evaluateJavaScript("navigator.geolocation = {"
+                                              "  watchPosition: function () {},"
+                                              "  getCurrentPosition: function () {}"
+                                              "};");
+
+    page_->currentFrame()->addToJavaScriptWindowObject("car", car_);
+    page_->currentFrame()->addToJavaScriptWindowObject("phone", phone_);
+    page_->currentFrame()->addToJavaScriptWindowObject("script", script_);
+}
+
+void WebGraphicView::AddSettings(const QString &settingFilePath)
+{
+    car_->ParseSettingFile(settingFilePath);
+}
 
 void WebGraphicView::SetInputMode(DataInputMode inputMode)
 {
-  car_->SetInputMode(inputMode);
+    car_->SetInputMode(inputMode);
 }
 
 void WebGraphicView::keyPressEvent(QKeyEvent *event)
 {
-#ifdef ENABLE_ADVANCED_DEBUG
-  qDebug() << "Key pressed: " << event->key();
-#endif
-  phone_->setLastKey(event->key());
-  phone_->key_pressed(event->key());
+    qDebug() << "Key pressed: " << event->key();
+    phone_->setLastKey(event->key());
+    phone_->key_pressed(event->key());
 }
 
 void WebGraphicView::OnOpenBluetoothManager()
 {
-  open_bluetooth_manager();
+    open_bluetooth_manager();
 }
 
-void WebGraphicView::onSavePhoneFile(const QString& content)
+void WebGraphicView::onSavePhoneFile(const QString &content)
 {
-  QUrl viewUrl = view_->url();
+    QUrl viewUrl = view_->url();
 
-  if (viewUrl.isLocalFile()) {
-    QString phoneIndexName = viewUrl.path();
-    phoneIndexName.replace("index.html", "phoneIndex.js");
-    QFile file(phoneIndexName);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        return;
+    if (viewUrl.isLocalFile())
+    {
+        QString phoneIndexName = viewUrl.path();
+        phoneIndexName.replace("index.html", "phoneIndex.js");
+        QFile file(phoneIndexName);
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+            return;
+        }
+        QTextStream out(&file);
+        out << content;
+        file.close();
     }
-    QTextStream out(&file);
-    out << content;
-    file.close();
-  }
 }
 
-void WebGraphicView::SetScriptPath(const QString& runScriptPath)
+void WebGraphicView::SetScriptPath(const QString &runScriptPath)
 {
-  script_->SetScriptPath(runScriptPath);
+    script_->SetScriptPath(runScriptPath);
 }
 
 /* vim: set expandtab tabstop=2 shiftwidth=2: */

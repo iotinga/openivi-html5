@@ -17,92 +17,98 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include "mainwindow.h"
-#include "car.h"
 #include <QApplication>
-#include <QtWebKitWidgets>
 #include <QCommandLineParser>
 
-QString qtr(const char *key) {
-  return QCoreApplication::translate("main", key);
+#include "car.h"
+#include "mainwindow.h"
+
+QString qtr(const char *key)
+{
+    return QCoreApplication::translate("main", key);
 }
 
-int main(int argc, char *argv[]) {
-  QApplication a(argc, argv);
-  QApplication::setOrganizationName("OpenIVI");
-  QApplication::setApplicationName("openivi");
-  DataInputMode inputMode = DATA_INPUT_FILE;
-  QString runScriptPath;
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    QApplication::setOrganizationName("OpenIVI");
+    QApplication::setApplicationName("openivi");
+    DataInputMode inputMode = DATA_INPUT_FILE;
+    QString runScriptPath;
 
-  QCommandLineParser parser;
-  parser.setApplicationDescription("OpenIVI Mobility HTML5 environment");
-  parser.addHelpOption();
+    QCommandLineParser parser;
+    parser.setApplicationDescription("OpenIVI Mobility HTML5 environment");
+    parser.addHelpOption();
 
-  QCommandLineOption url(QStringList() << "u"
-                                       << "url",
-                         qtr("Set startup URL"), "url");
+    QCommandLineOption url(QStringList() << "u"
+                                         << "url",
+                           qtr("Set startup URL"), "url");
 
-  parser.addOption(url);
+    parser.addOption(url);
 
-  QCommandLineOption clearSettings(QStringList() << "clear-settings",
-                                   qtr("Clear settings"));
+    QCommandLineOption clearSettings(QStringList() << "clear-settings", qtr("Clear settings"));
 
-  parser.addOption(clearSettings);
+    parser.addOption(clearSettings);
 
-  QCommandLineOption fullScreen(QStringList() << "f"
-                                              << "full-screen",
-                                qtr("Start Full Screen"));
-  parser.addOption(fullScreen);
+    QCommandLineOption fullScreen(QStringList() << "f"
+                                                << "full-screen",
+                                  qtr("Start Full Screen"));
+    parser.addOption(fullScreen);
 
-  QCommandLineOption canMode(QStringList() << "c"
-                                              << "can",
-                                qtr("Read data from CAN bus"));
-  parser.addOption(canMode);
+    QCommandLineOption canMode(QStringList() << "c"
+                                             << "can",
+                               qtr("Read data from CAN bus"));
+    parser.addOption(canMode);
 
-  QCommandLineOption settingFile(QStringList() << "s"
-                                              << "settings",
-                                qtr("Read data from CAN bus"), "settings");
-  parser.addOption(settingFile);
+    QCommandLineOption settingFile(QStringList() << "s"
+                                                 << "settings",
+                                   qtr("Read data from CAN bus"), "settings");
+    parser.addOption(settingFile);
 
-  QCommandLineOption scriptFile(QStringList() << "r"
-                                              << "run",
-                                qtr("Run script path"), "run");
-  parser.addOption(scriptFile);
+    QCommandLineOption scriptFile(QStringList() << "r"
+                                                << "run",
+                                  qtr("Run script path"), "run");
+    parser.addOption(scriptFile);
 
-  parser.process(a);
+    parser.process(a);
 
-  if (parser.isSet(clearSettings)) {
-    QSettings settings;
-    settings.clear();
-  }
+    if (parser.isSet(clearSettings))
+    {
+        QSettings settings;
+        settings.clear();
+    }
 
-  if (parser.isSet(canMode)) {
-    inputMode = DATA_INPUT_CAN;
-  }
+    if (parser.isSet(canMode))
+    {
+        inputMode = DATA_INPUT_CAN;
+    }
 
-  QString url_str = parser.value(url);
-  if ( (false == url_str.startsWith("http://", Qt::CaseInsensitive)) &&
-       (false == url_str.startsWith("https://", Qt::CaseInsensitive)) &&
-       (false == url_str.startsWith("file://", Qt::CaseInsensitive)) ) {
-    url_str = "file://" + url_str;
-  }
-  QString settings_str = parser.value(settingFile);
+    QString url_str = parser.value(url);
+    if ((false == url_str.startsWith("http://", Qt::CaseInsensitive))
+        && (false == url_str.startsWith("https://", Qt::CaseInsensitive))
+        && (false == url_str.startsWith("file://", Qt::CaseInsensitive)))
+    {
+        url_str = "file://" + url_str;
+    }
+    QString settings_str = parser.value(settingFile);
 
-  MainWindow w(0, QUrl(url_str), inputMode, settings_str);
+    MainWindow w(0, QUrl(url_str), inputMode, settings_str);
 
-  w.show();
+    w.show();
 
-  if (parser.isSet(fullScreen)) {
-    w.ToggleFullScreen();
-    // a.setCursorVisible(false);
-    a.setOverrideCursor(Qt::BlankCursor);
-  }
+    if (parser.isSet(fullScreen))
+    {
+        w.ToggleFullScreen();
+        // a.setCursorVisible(false);
+        a.setOverrideCursor(Qt::BlankCursor);
+    }
 
-  if (parser.isSet(scriptFile)) {
-    runScriptPath = parser.value(scriptFile);
-    w.SetScriptPath(runScriptPath);
-  }
+    if (parser.isSet(scriptFile))
+    {
+        runScriptPath = parser.value(scriptFile);
+        w.SetScriptPath(runScriptPath);
+    }
 
-  return a.exec();
+    return a.exec();
 }
 /* vim: set expandtab tabstop=2 shiftwidth=2: */

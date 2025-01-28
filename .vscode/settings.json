@@ -1,0 +1,40 @@
+{
+  "C_Cpp.intelliSenseEngine": "default",
+  "files.associations": {
+    "qtwebkit": "cpp",
+    "qwebpage": "cpp",
+    "qwebview": "cpp",
+    "qcommandlineparser": "cpp",
+    "qapplication": "cpp",
+    "qfiledialog": "cpp",
+    "qsettings": "cpp",
+    "*.moc": "cpp",
+    "array": "cpp",
+    "compare": "cpp",
+    "functional": "cpp",
+    "ratio": "cpp",
+    "tuple": "cpp",
+    "type_traits": "cpp",
+    "utility": "cpp",
+    "variant": "cpp",
+    "typeinfo": "cpp",
+    "qwebenginepage": "cpp"
+  },
+  "cmake.configureOnOpen": true,
+  "C_Cpp.codeAnalysis.clangTidy.enabled": false,
+  "[cpp]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  },
+  "c-cpp-flylint.cppcheck.extraArgs": ["--quiet", "--addon=misra.json"],
+  "c-cpp-flylint.clang.includePaths": ["."],
+  "c-cpp-flylint.cppcheck.includePaths": ["."],
+  "C_Cpp.errorSquiggles": "disabled",
+  "makefile.configureOnOpen": false,
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "never"
+    },
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  }
+}

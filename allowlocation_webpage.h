@@ -22,14 +22,18 @@
 
 #include <QWebPage>
 
-class AllowLocationWebPage : public QWebPage {
-  Q_OBJECT
+class AllowLocationWebPage : public QWebPage
+{
+    Q_OBJECT
 
- public:
-  AllowLocationWebPage(QObject* parent = 0);
+  public:
+    AllowLocationWebPage(QObject *parent = 0);
 
- private slots:
-  void permissionRequested(QWebFrame* frame, QWebPage::Feature feature);
+  protected:
+    void javaScriptConsoleMessage(const QString &message, int lineNumber, const QString &sourceID) override;
+
+  private slots:
+    void permissionRequested(QWebFrame *frame, QWebPage::Feature feature);
 };
 
 /* vim: set expandtab tabstop=2 shiftwidth=2: */

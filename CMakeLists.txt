@@ -19,6 +19,8 @@ else(ENABLE_ADVANCED_DEBUG)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
 endif(ENABLE_ADVANCED_DEBUG)
 
+message("Compiling with flags ${CMAKE_CXX_FLAGS}")
+
 
 set(SocketCAN_DIR ${openivi-html5_SOURCE_DIR})
 

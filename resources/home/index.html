@@ -1,46 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" href="style.css" />
-</head>
-<body>
+  </head>
+  <body>
     <div id="home-heading">
-        <div class="info-box" id="phone-details-container">
-            <span>Not connected</span>
+      <div class="info-box" id="phone-details-container">
+        <div id="phone-not-connected">
+          <span>Not connected</span>
         </div>
-        <div class="info-box" id="time-container">
-            <div>
-                <span id="time-hour"></span>
-                <span id="time-minute"></span>
-            </div>
-            <span>:</span>
+        <div id="phone-connected" style="display: none">
+          <img src="assets/icons/battery-full.svg" class="icon" />
+          <img src="assets/icons/message.svg" class="icon" />
         </div>
+      </div>
+      <div class="info-box" id="time-container">
+        <div>
+          <span id="time-hour"></span>
+          <span id="time-minute"></span>
+        </div>
+        <span>:</span>
+      </div>
     </div>
-    
+
     <div class="page-title-container">
-        <h1>Settings</h1>
+      <h1>Settings</h1>
     </div>
 
     <div id="buttons">
-        <button>
-            <span>WebLink</span>
-        </button>
-        <button>
-            <img src="assets/icons/videocam.svg">
-            <span>Camera</span>
-        </button>
-        <button>
-            <img src="assets/icons/phone.svg">
-            <span>Phone</span>
-        </button>
-        <button>
-            <img src="assets/icons/settings.svg">
-            <span>Settings</span>
-        </button>
+      <button>
+        <img src="assets/icons/videocam.svg" class="icon" />
+        <span>WebLink</span>
+      </button>
+      <button>
+        <img src="assets/icons/videocam.svg" class="icon" />
+        <span>Camera</span>
+      </button>
+      <button>
+        <img src="assets/icons/phone.svg" class="icon" />
+        <span>Phone</span>
+      </button>
+      <button>
+        <img src="assets/icons/settings.svg" class="icon" />
+        <span>Settings</span>
+      </button>
     </div>
 
+    <script src="polyfill.js"></script>
     <script src="script.js"></script>
-</body>
+  </body>
 </html>

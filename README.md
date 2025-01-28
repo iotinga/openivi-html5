@@ -9,6 +9,12 @@ This fork aims to integrate some more features:
 
 The interface is optimized for a 800x480 display, but can be easily adapted to different resolution acting on `mainwindow.ui` and HTML/CSS part.
 
+# Ofono
+
+When developing on local machine you may see that Ofono is not fetching modems correctly. That could be caused by configuration of the ofono dbus service:
+you need to check the `/etc/dbus-1/system-d/ofono.conf` file and see what policy is being used. If the policy allows operations for `root` user only you can modify that
+to match your user or group.
+
 ## Contributing
 
 ### Style

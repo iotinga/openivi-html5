@@ -1,0 +1,36 @@
+---
+BasedOnStyle: Microsoft
+IndentWidth: 4
+---
+Language: Cpp
+PointerAlignment: Right
+ColumnLimit: 120
+AlignEscapedNewlines: Right
+BreakBeforeBraces: Custom
+AlignConsecutiveMacros: true
+BraceWrapping:
+  AfterEnum: false
+  AfterStruct: false
+  SplitEmptyFunction: false
+  AfterFunction: true
+  AfterUnion: false
+  AfterControlStatement: Always
+  BeforeWhile: true
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '^(<|")(esp|driver/|nvs|lwip/|hal|cJSON).*\.h'
+    SortPriority: 3
+    Priority: 1
+  - Regex: '^(<|")freertos/.*'
+    SortPriority: 2
+    Priority: 2
+  - Regex: '^"adapter/.*\.h'
+    SortPriority: 4
+    Priority: 4
+  - Regex: "<[[:alnum:]._/]+>"
+    Priority: 3
+    SortPriority: 1
+  - Regex: ".*"
+    SortPriority: 5
+    Priority: 5
+BreakBeforeBinaryOperators: NonAssignment

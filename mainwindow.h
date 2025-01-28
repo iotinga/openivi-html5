@@ -22,37 +22,41 @@
 
 #include <QMainWindow>
 #include <QUrl>
+
 #include "car.h"
 #include "phone.h"
 // #include <bluetooth/bluetoothmanager.h>
 
-namespace Ui {
+namespace Ui
+{
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow {
-  Q_OBJECT
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
 
- public:
-  explicit MainWindow(QWidget *parent = 0, const QUrl &force_url = QUrl(), DataInputMode inputMode = DATA_INPUT_NONE, const QString &settingsPath = QString());
-  ~MainWindow();
+  public:
+    explicit MainWindow(QWidget *parent = 0, const QUrl &force_url = QUrl(), DataInputMode inputMode = DATA_INPUT_NONE,
+                        const QString &settingsPath = QString());
+    ~MainWindow();
 
-  void SetUrl(const QUrl &url);
-  void SetScriptPath(const QString& scriptPath);
-  // Overriden from QMainWindow
-  void keyPressEvent(QKeyEvent *event);
+    void SetUrl(const QUrl &url);
+    void SetScriptPath(const QString &scriptPath);
+    // Overriden from QMainWindow
+    void keyPressEvent(QKeyEvent *event);
 
- public slots:
-  void ToggleFullScreen();
+  public slots:
+    void ToggleFullScreen();
 
- private slots:
-  void OpenUrlDialog();
-  void ManageBluetooth();
+  private slots:
+    void OpenUrlDialog();
+    void ManageBluetooth();
 
- private:
-  Ui::MainWindow *ui_;
-  // BluetoothManager* btManager;
+  private:
+    Ui::MainWindow *ui_;
+    // BluetoothManager* btManager;
 };
 
 /* vim: set expandtab tabstop=2 shiftwidth=2: */
-#endif  // OPENIVI_MAINWINDOW_H_
+#endif // OPENIVI_MAINWINDOW_H_

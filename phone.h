@@ -8,19 +8,19 @@
 #include <QObject>
 
 // Include ofono classes generated from D-Bus interfaces
+#include "ofono/OfonoCallVolume.h"
+#include "ofono/OfonoHandsfree.h"
 #include "ofono/OfonoManager.h"
 #include "ofono/OfonoModem.h"
-#include "ofono/OfonoVoiceCallManager.h"
-#include "ofono/OfonoVoiceCall.h"
 #include "ofono/OfonoNetworkRegistration.h"
-#include "ofono/OfonoHandsfree.h"
-#include "ofono/OfonoCallVolume.h"
+#include "ofono/OfonoVoiceCall.h"
+#include "ofono/OfonoVoiceCallManager.h"
 
 /* Battery charge level is an integer ranging between 0 and 5.
  * https://git.kernel.org/pub/scm/network/ofono/ofono.git/tree/doc/handsfree-api.txt
  * To convert it to a percentage, multiply by 20.
  */
-#define BATTERY_PERCENTAGE_SCALE    20
+#define BATTERY_PERCENTAGE_SCALE 20
 
 /**
  * @todo write docs
@@ -37,7 +37,8 @@ class Phone : public QObject
     Q_PROPERTY(int battery MEMBER m_battery);
     Q_PROPERTY(int volume MEMBER m_volume);
     Q_PROPERTY(uint lastkey MEMBER m_key READ getLastKey WRITE setLastKey);
-public:
+
+  public:
     /**
      * Default constructor
      */
@@ -51,31 +52,30 @@ public:
     /** Init ofono interface and enumerate modems. */
     void InitOfono();
     /** Init one ofono modem to enable interface calls */
-    void InitModem(OfonoModem& modemInfo);
+    void InitModem(OfonoModem &modemInfo);
     /** Clear current modem (used to change it) */
     void ClearCurrentModem();
     /** Update current modem when one is connected/disconnected. */
-    void UpdateCurrentModem();
+    void UpdateCurrentModem(void);
     /** Update phone data file. */
-    void UpdatePhoneDataFile();
+    void UpdatePhoneDataFile(void);
 
     void setLastKey(uint keyValue);
-    uint getLastKey();
+    uint getLastKey(void);
 
-signals:
-    void refresh_phone_info();
-    void update_call_status();
+  signals:
+    void refresh_phone_info(void);
+    void update_call_status(void);
     void key_pressed(uint key_input);
-//     void key_pressed();
-    void open_bluetooth_manager();
-    void save_phone_file(const QString& content);
+    void open_bluetooth_manager(void);
+    void save_phone_file(const QString &content);
 
-public slots:
-    void OnCall(const QString& phoneNumber);
+  public slots:
+    void OnCall(const QString &phoneNumber);
     void OnHangup();
     void OnOpenBluetoothManager();
 
-private slots:
+  private slots:
     void OnCallStarted(const QDBusObjectPath &path, const QVariantMap &properties);
     void OnCallClosed(const QDBusObjectPath &path);
     void OnCallPropertyChanged(const QString &propertyName, const QDBusVariant &propertyValue);
@@ -86,7 +86,7 @@ private slots:
     void OnModemAdded(const QDBusObjectPath &path, const QVariantMap &properties);
     void OnModemRemoved(const QDBusObjectPath &path);
 
-private:
+  private:
     // Ofono general interfaces
     OrgOfonoManagerInterface *ofonoInterface;
     OrgOfonoVoiceCallManagerInterface *ofonoVoiceCallManager;
@@ -96,7 +96,7 @@ private:
 
     // Modem list objects
     ModemList modems;
-    QList<OrgOfonoModemInterface*> ofonoModemInterfaces;
+    QList<OrgOfonoModemInterface *> ofonoModemInterfaces;
     int currentModemIndex;
 
     // Voice call objects

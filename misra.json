@@ -1,0 +1,8 @@
+{
+  "script": "misra.py",
+  "args": [
+    "--rule-texts=misra.txt",
+    "--severity=warning",
+    "--suppress-rules=1.4,21.3,11.5,19.2,17.7,2.7,15.5,8.9"
+  ]
+}

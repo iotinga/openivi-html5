@@ -11,17 +11,16 @@
 #ifndef OFONOMANAGER_H
 #define OFONOMANAGER_H
 
-#include <QtCore/QObject>
 #include <QtCore/QByteArray>
 #include <QtCore/QList>
 #include <QtCore/QMap>
+#include <QtCore/QObject>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <QtCore/QVariant>
 #include <QtDBus/QtDBus>
 
-typedef struct OfonoModem_Struct
-{
+typedef struct OfonoModem_Struct {
     QDBusObjectPath objectPath;
     QMap<QString, QVariant> properties;
 } OfonoModem;
@@ -31,7 +30,6 @@ typedef QList<OfonoModem> ModemList;
 Q_DECLARE_METATYPE(OfonoModem);
 Q_DECLARE_METATYPE(ModemList);
 
-
 // Marshall the OfonoModem data into a D-Bus argument
 QDBusArgument &operator<<(QDBusArgument &argument, const OfonoModem &modem);
 // Retrieve the OfonoModem data from the D-Bus argument
@@ -40,33 +38,38 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, OfonoModem &modem
 /*
  * Proxy class for interface org.ofono.Manager
  */
-class OrgOfonoManagerInterface: public QDBusAbstractInterface
+class OrgOfonoManagerInterface : public QDBusAbstractInterface
 {
     Q_OBJECT
-public:
+  public:
     static inline const char *staticInterfaceName()
-    { return "org.ofono.Manager"; }
+    {
+        return "org.ofono.Manager";
+    }
 
-public:
-    OrgOfonoManagerInterface(const QString &service, const QString &path, const QDBusConnection &connection, QObject *parent = nullptr);
+  public:
+    OrgOfonoManagerInterface(const QString &service, const QString &path, const QDBusConnection &connection,
+                             QObject *parent = nullptr);
 
     ~OrgOfonoManagerInterface();
 
-public Q_SLOTS: // METHODS
+  public Q_SLOTS: // METHODS
     inline QDBusPendingReply<ModemList> GetModems()
     {
         QList<QVariant> argumentList;
         return asyncCallWithArgumentList(QStringLiteral("GetModems"), argumentList);
     }
 
-Q_SIGNALS: // SIGNALS
+  Q_SIGNALS: // SIGNALS
     void ModemAdded(const QDBusObjectPath &path, const QVariantMap &properties);
     void ModemRemoved(const QDBusObjectPath &path);
 };
 
-namespace org {
-  namespace ofono {
-    typedef ::OrgOfonoManagerInterface Manager;
-  }
+namespace org
+{
+namespace ofono
+{
+typedef ::OrgOfonoManagerInterface Manager;
 }
+} // namespace org
 #endif
