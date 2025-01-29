@@ -61,6 +61,7 @@ class WebGraphicView : public QGraphicsView
   public slots:
     void FocusUpdate();
     void OnOpenBluetoothManager();
+    void OnOpenCameraView();
 
   private slots:
     void AddJavascriptObjectsToWindow();
@@ -82,6 +83,7 @@ class WebGraphicView : public QGraphicsView
     Car *car_;
     Phone *phone_;
     ScriptRunner *script_;
+    QProcess *process;
 };
 
 /* vim: set expandtab tabstop=2 shiftwidth=2: */

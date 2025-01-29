@@ -78,7 +78,6 @@ void Phone::ClearCurrentModem()
 void Phone::setLastKey(uint keyValue)
 {
     m_key = keyValue;
-    // key_pressed();
 }
 
 uint Phone::getLastKey()

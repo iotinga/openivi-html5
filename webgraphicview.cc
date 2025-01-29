@@ -112,6 +112,7 @@ void WebGraphicView::AddJavascriptObjectsToWindow()
     page_->currentFrame()->addToJavaScriptWindowObject("car", car_);
     page_->currentFrame()->addToJavaScriptWindowObject("phone", phone_);
     page_->currentFrame()->addToJavaScriptWindowObject("script", script_);
+    page_->currentFrame()->addToJavaScriptWindowObject("controller", this);
 }
 
 void WebGraphicView::AddSettings(const QString &settingFilePath)
@@ -134,6 +135,15 @@ void WebGraphicView::keyPressEvent(QKeyEvent *event)
 void WebGraphicView::OnOpenBluetoothManager()
 {
     open_bluetooth_manager();
+}
+
+void WebGraphicView::OnOpenCameraView()
+{
+    qDebug() << "OnOpenCameraView call";
+    process = new QProcess(this);
+    QString program = "open";
+    QStringList args = {"/home/kaskeeeee/repo/openivi-html5/ofono"};
+    process->start(program, args);
 }
 
 void WebGraphicView::onSavePhoneFile(const QString &content)

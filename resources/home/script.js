@@ -1,3 +1,9 @@
+const ICONS_FOLDER = "assets/icons";
+const ARROW_LEFT = 16777234;
+const ARROW_UP = 16777235;
+const ARROW_RIGHT = 16777236;
+const ARROW_DOWN = 16777237;
+
 function PhoneViewModel() {
   if (window.phone) {
     this.isConnected = () => window.phone.name != "Disconnected";
@@ -19,7 +25,7 @@ function PhoneViewModel() {
 
     this.updateView = () => {
       console.log(
-        `Updating view: ${this.getName()}, ${this.getBattery()}, ${this.getCarrier()}, ${this.getSignal()}, ${this.getBatteryLevelAsString()}`
+        `Updating view: ${this.getName()}, ${this.getBattery()}, ${this.getCarrier()}, ${this.getSignal()}`
       );
       const notConnectedElement = document.getElementById(
         "phone-not-connected"
@@ -33,7 +39,7 @@ function PhoneViewModel() {
         const batteryIcon = connectedElement.children.item(0);
         const notificationIcon = connectedElement.children.item(1);
 
-        batteryIcon.src = `assets/icons/battery-${this.getBatteryLevelAsString()}.svg`;
+        batteryIcon.src = `${ICONS_FOLDER}/battery-${this.getBatteryLevelAsString()}.svg`;
       } else {
         connectedElement.style["display"] = "none";
         notConnectedElement.style["display"] = "flex";
@@ -48,11 +54,47 @@ function PhoneViewModel() {
 
 function ActionsViewModel() {
   const buttons = document.getElementById("buttons");
+  const buttonsCount = buttons.children.length;
+
+  this.currentFocusIndex = -1;
 
   this.focusButton = (index) => {
+    if (this.currentFocusIndex == -1) {
+      index = 0;
+    }
+
     const focusableButton = buttons.children.item(index);
     focusableButton.focus();
+    this.currentFocusIndex = index;
   };
+
+  this.getFocusedButton = () => {
+    return buttons.children.item(this.currentFocusIndex);
+  };
+
+  this.onKeyPressed = (key) => {
+    switch (key) {
+      case ARROW_UP:
+        this.focusButton(
+          (buttonsCount + this.currentFocusIndex - 1) % buttonsCount
+        );
+        break;
+      case ARROW_DOWN:
+        this.focusButton((this.currentFocusIndex + 1) % buttonsCount);
+        break;
+      case ARROW_RIGHT:
+        this.getFocusedButton().click();
+        break;
+    }
+  };
+
+  for (let i = 0; i < buttons.children.length; i++) {
+    const button = buttons.children.item(i);
+    button.addEventListener("focus", () => button.classList.add("focused"));
+    button.addEventListener("blur", () => button.classList.remove("focused"));
+  }
+
+  window.phone.key_pressed.connect(this.onKeyPressed);
 }
 
 const phoneVM = new PhoneViewModel();
@@ -66,10 +108,13 @@ function updateHourAndMinute() {
   document.getElementById("time-minute").textContent = `${minutes}`;
 }
 
+function openCamera() {
+  window.controller.OnOpenCameraView();
+}
+
 function init() {
   updateHourAndMinute();
   setInterval(updateHourAndMinute, 1000);
-  actionsVM.focusButton(0);
   phoneVM.updateView();
 }
 
