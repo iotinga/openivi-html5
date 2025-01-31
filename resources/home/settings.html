@@ -6,9 +6,10 @@
     <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   <body>
-    <div id="home-heading">
+    <div id="header">
       <div class="info-box" id="phone-details-container">
         <div id="phone-not-connected">
+          <img src="assets/icons/phone-not-connected.svg" class="icon small" />
           <span>Not connected</span>
         </div>
         <div id="phone-connected" style="display: none">
@@ -18,8 +19,8 @@
       </div>
       <div class="info-box" id="time-container">
         <div>
-          <span id="time-hour"></span>
-          <span id="time-minute"></span>
+          <span class="time-hour"></span>
+          <span class="time-minute"></span>
         </div>
         <span>:</span>
       </div>
@@ -32,21 +33,32 @@
     <div id="buttons">
       <a href="weblink.html" class="button">
         <img src="assets/icons/clock.svg" class="icon" />
-        <span>Time</span>
-        <span class="subtitle">16:40</span>
+        <div class="right-content">
+          <span>Time</span>
+          <div style="flex-direction: row">
+            <span class="subtitle time-hour"></span>
+            <span class="subtitle">:</span>
+            <span class="subtitle time-minute"></span>
+          </div>
+        </div>
       </a>
-      <button class="button" onclick="openCamera()">
+      <a href="weblink.html" class="button">
         <img src="assets/icons/language.svg" class="icon" />
-        <span>Language</span>
-        <span class="subtitle">English</span>
-      </button>
-      <a href="settings.html" class="button">
+        <div class="right-content">
+          <span>Language</span>
+          <span class="subtitle">English</span>
+        </div>
+      </a>
+      <a href="bluetooth.html" class="button">
         <img src="assets/icons/bluetooth.svg" class="icon" />
-        <span>Connect phone</span>
+        <div class="right-content">
+          <span>Connect phone</span>
+        </div>
       </a>
     </div>
 
-    <script src="polyfill.js"></script>
-    <script src="script.js"></script>
+    <script src="shared/polyfill.js"></script>
+    <script src="shared/header.js"></script>
+    <script src="shared/actions.js"></script>
   </body>
 </html>

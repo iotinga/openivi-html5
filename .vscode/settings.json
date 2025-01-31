@@ -18,7 +18,10 @@
     "utility": "cpp",
     "variant": "cpp",
     "typeinfo": "cpp",
-    "qwebenginepage": "cpp"
+    "qwebenginepage": "cpp",
+    "qlistwidgetitem": "cpp",
+    "qbluetoothdevicediscoveryagent": "cpp",
+    "qbluetoothdeviceinfo": "cpp"
   },
   "cmake.configureOnOpen": true,
   "C_Cpp.codeAnalysis.clangTidy.enabled": false,
@@ -26,8 +29,8 @@
     "editor.defaultFormatter": "xaver.clang-format"
   },
   "c-cpp-flylint.cppcheck.extraArgs": ["--quiet", "--addon=misra.json"],
-  "c-cpp-flylint.clang.includePaths": ["."],
-  "c-cpp-flylint.cppcheck.includePaths": ["."],
+  "c-cpp-flylint.clang.includePaths": ["src/"],
+  "c-cpp-flylint.cppcheck.includePaths": ["src/"],
   "C_Cpp.errorSquiggles": "disabled",
   "makefile.configureOnOpen": false,
   "[python]": {

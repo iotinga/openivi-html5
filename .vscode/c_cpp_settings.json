@@ -4,7 +4,7 @@
     {
       "name": "Default",
       "intelliSenseMode": "gcc-x64",
-      "includePath": ["${workspaceFolder}/**"],
+      "includePath": ["${workspaceFolder}/**/*"],
       "compilerPath": "/usr/bin/gcc",
       "cStandard": "gnu11",
       "browse": {
